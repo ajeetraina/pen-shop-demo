@@ -1,18 +1,24 @@
 FROM node:18-alpine
 
 WORKDIR /app
-COPY package*.json ./
-RUN npm install --only=production
-COPY pen-catalog-server.js ./
-COPY data/ ./data/
 
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install --only=production
+
+# Copy the MCP server code
+COPY pen-catalog-server.js ./
+
+# Create non-root user
 RUN addgroup -g 1001 -S penuser && \
     adduser -S penuser -u 1001 -G penuser
+
+# Set ownership
 RUN chown -R penuser:penuser /app
 USER penuser
 
-EXPOSE 3001
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3001/health || exit 1
-
+# MCP servers run via stdio, not HTTP
+# The server will be started by MCP Gateway
 CMD ["node", "pen-catalog-server.js"]

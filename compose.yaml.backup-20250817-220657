@@ -8,6 +8,8 @@ services:
       - ./index.html:/usr/share/nginx/html/index.html:ro
     networks:
       - pen-shop-network
+    depends_on:
+      - pen-catalogue
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080"]
       interval: 30s
@@ -34,15 +36,23 @@ services:
       timeout: 5s
       retries: 5
 
-  # Pen Catalogue MCP Server (builds image for MCP Gateway to use)
+  # Pen Catalogue MCP Server
   pen-catalogue-mcp:
     build:
       context: ./pen-catalog-mcp
       dockerfile: Dockerfile
-    image: pen-shop-demo-pen-catalogue-mcp
-    # This service doesn't run standalone - it's used by MCP Gateway
-    profiles:
-      - build-only
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    networks:
+      - pen-shop-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # MCP Gateway - properly configured
   mcp-gateway:
@@ -53,7 +63,7 @@ services:
       - pen-shop-network
     command:
       - --transport=sse
-      - --servers=pen-catalog,mongodb,fetch
+      - --servers=pen-catalog,mongodb,fetch,curl
       - --config=/mcp_config
       - --secrets=docker-desktop:/run/secrets/mcp_secret
       - --verbose
@@ -63,6 +73,7 @@ services:
       - mcp_secret
     depends_on:
       - mongodb
+      - pen-catalogue-mcp
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8811/health"]
       interval: 30s
@@ -79,6 +90,7 @@ services:
     environment:
       - PYTHONPATH=/app
       - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
+      - PEN_CATALOGUE_URL=http://pen-catalogue-mcp:3001
       - OPENAI_BASE_URL=https://api.openai.com/v1
       - AI_DEFAULT_MODEL=openai/gpt-4
     networks:
@@ -127,10 +139,13 @@ configs:
     content: |
       pen-catalog:
         enabled: true
-        command: ["node", "pen-catalog-server.js"]
+        command: ["node", "/app/pen-catalog-server.js"]
         image: pen-shop-demo-pen-catalogue-mcp
         transport: stdio
         timeout: 30s
+        environment:
+          - PORT=3001
+          - NODE_ENV=production
       
       mongodb:
         enabled: true
@@ -143,6 +158,12 @@ configs:
       fetch:
         enabled: true
         image: mcp/fetch:latest
+        transport: stdio
+        timeout: 30s
+        
+      curl:
+        enabled: true
+        image: alpine/curl:latest
         transport: stdio
         timeout: 30s
 
