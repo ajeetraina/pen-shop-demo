@@ -1,0 +1,44 @@
+# MCP Gateway Security Configuration
+
+gateway:
+  port: 9000
+  dashboard_port: 9001
+  
+security:
+  input_filtering:
+    enabled: true
+    max_length: 1000
+    
+  output_sanitization:
+    enabled: true
+    redact_patterns:
+      - "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b"  # emails
+      - "\\b\\d{16}\\b"  # credit cards
+      - "\\b\\d{3}-\\d{2}-\\d{4}\\b"  # SSN
+      - "password"
+      - "api[_-]?key"
+      
+  rate_limiting:
+    enabled: true
+    window_ms: 900000  # 15 minutes
+    max_requests: 100
+    
+  prompt_injection_detection:
+    enabled: true
+    patterns:
+      - "ignore\\s+previous\\s+instructions"
+      - "system\\s*:"
+      - "reveal\\s+password"
+      - "admin\\s+access"
+      - "drop\\s+table"
+      - "delete\\s+from"
+      - "show\\s+tables"
+
+mcp_servers:
+  - name: "pen-inventory"
+    url: "http://pen-inventory-mcp-secure:3000"
+    security_level: "high"
+    
+  - name: "customer-service"  
+    url: "http://customer-service-mcp:3000"
+    security_level: "medium"

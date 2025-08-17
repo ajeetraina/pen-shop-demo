@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  pen-api-secure:
+    build: ./pen-shop/api
+    ports:
+      - "3002:3001"
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=pen-db-secure
+      - DB_PORT=5432
+      - DB_NAME=penstore
+      - DB_USER=penstore_user
+      - DB_PASS=${DB_PASSWORD}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - SECURITY_ENABLED=true
+      - MCP_GATEWAY_URL=http://mcp-gateway:9000
+    depends_on:
+      - pen-db-secure
+      - mcp-gateway
+    networks:
+      - pen-secure-network
+    security_opt:
+      - no-new-privileges:true
+
+  pen-frontend-secure:
+    build: ./pen-shop/frontend
+    ports:
+      - "8081:80"
+    environment:
+      - API_URL=http://localhost:3002
+    depends_on:
+      - pen-api-secure
+    networks:
+      - pen-secure-network
+
+  pen-db-secure:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=penstore
+      - POSTGRES_USER=penstore_user
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - pen-secure-data:/var/lib/postgresql/data
+      - ./pen-shop/database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - pen-secure-network
+
+  mcp-gateway:
+    build: ./mcp-gateway
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - NODE_ENV=production
+      - ENABLE_INPUT_FILTERING=true
+      - ENABLE_OUTPUT_SANITIZATION=true
+      - ENABLE_RATE_LIMITING=true
+    volumes:
+      - ./mcp-gateway/gateway-config.yml:/app/config/gateway.yml:ro
+    depends_on:
+      - pen-inventory-mcp-secure
+    networks:
+      - pen-secure-network
+      - mcp-internal-network
+
+  pen-inventory-mcp-secure:
+    build: ./mcp-servers/pen-inventory
+    environment:
+      - DB_HOST=pen-db-secure
+      - DB_PORT=5432
+      - DB_NAME=penstore
+      - DB_USER=penstore_user
+      - DB_PASS=${DB_PASSWORD}
+      - SECURITY_CHECKS=true
+    depends_on:
+      - pen-db-secure
+    networks:
+      - mcp-internal-network
+
+volumes:
+  pen-secure-data:
+
+networks:
+  pen-secure-network:
+  mcp-internal-network:
+    internal: true

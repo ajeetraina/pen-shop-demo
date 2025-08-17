@@ -1,0 +1,142 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f8f9fa;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    display: inline-block;
+    margin-right: 2rem;
+}
+
+nav {
+    display: inline-block;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin-right: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+nav a:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.hero {
+    text-align: center;
+    padding: 3rem 0;
+    background: white;
+    margin: 2rem 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.search-section {
+    background: white;
+    padding: 2rem;
+    margin: 2rem 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.search-box {
+    display: flex;
+    gap: 10px;
+    margin: 1rem 0;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.search-box button,
+button {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: transform 0.2s;
+}
+
+button:hover {
+    transform: translateY(-1px);
+}
+
+.pen-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.pen-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.pen-card:hover {
+    transform: translateY(-2px);
+}
+
+.pen-card h4 {
+    color: #667eea;
+    margin-bottom: 0.5rem;
+}
+
+.pen-card .price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #764ba2;
+    margin: 1rem 0;
+}
+
+.attack-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+}
+
+.attack-buttons button {
+    background: #f44336;
+    padding: 10px 15px;
+    font-size: 14px;
+}
+
+.attack-buttons button:hover {
+    background: #d32f2f;
+}
