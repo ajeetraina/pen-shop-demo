@@ -3,15 +3,18 @@ services:
   # Pen Shop Services
   #
   pen-front-end:
-    image: nginx:alpine
+    image: nginxinc/nginx-unprivileged:alpine
     hostname: pen-front-end
     ports:
-      - 9091:80
+      - 9091:8080
     volumes:
       - ./web-interface/index.html:/usr/share/nginx/html/index.html:ro
     restart: always
+    user: "nginx"
     cap_drop:
       - all
+    volumes:
+    - ./nginx.conf:/etc/nginx/nginx.conf:ro
 
   pen-catalogue:
     build: ./pen-catalog-mcp
