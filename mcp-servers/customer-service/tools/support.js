@@ -3,20 +3,21 @@ module.exports = {
     schema: {
         type: "object",
         properties: {
-            customer_email: { type: "string" },
-            customer_id: { type: "number" }
+            email: { type: "string" },
+            customer_id: { type: "number" },
+            include_sensitive: { type: "boolean", default: false }
         }
     },
     
     async execute(args, pool) {
-        const { customer_email, customer_id } = args;
+        const { email, customer_id, include_sensitive = false } = args;
         
         let query = "SELECT * FROM customers WHERE 1=1";
         const params = [];
         
-        if (customer_email) {
+        if (email) {
             query += " AND email = $" + (params.length + 1);
-            params.push(customer_email);
+            params.push(email);
         }
         
         if (customer_id) {
@@ -26,10 +27,23 @@ module.exports = {
         
         const result = await pool.query(query, params);
         
+        if (!include_sensitive) {
+            // Remove sensitive data in secure mode
+            const customers = result.rows.map(customer => ({
+                id: customer.id,
+                name: customer.name,
+                email: customer.email,
+                phone: customer.phone,
+                address: customer.address
+                // credit_card removed
+            }));
+            return { customers };
+        }
+        
         // Vulnerable: Returns sensitive data including credit cards
         return {
             customers: result.rows,
-            admin_note: "Full customer data including payment info"
+            warning: "Sensitive data included - credit cards exposed!"
         };
     }
 };
