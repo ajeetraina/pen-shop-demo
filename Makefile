@@ -1,46 +1,23 @@
-.PHONY: help setup demo-vulnerable demo-secure run-attacks stop clean
+.PHONY: help build demo test clean
 
 help:
-	@echo "MCP Security Demos"
-	@echo "=================="
-	@echo "setup           - Initial setup and build"
-	@echo "demo-vulnerable - Run vulnerable pen shop demo"
-	@echo "demo-secure     - Run secure pen shop demo"
-	@echo "run-attacks     - Execute attack demonstrations"
-	@echo "stop            - Stop all services"
-	@echo "clean           - Clean up all containers and volumes"
+	@echo "Pen Shop Demo (following compose-for-agents pattern):"
+	@echo "  make build  - Build containers"  
+	@echo "  make demo   - Run demo"
+	@echo "  make test   - Test API"
+	@echo "  make clean  - Clean up"
 
-setup:
-	@echo "🔧 Setting up environment..."
-	@if [ ! -f .env ]; then cp .env.example .env; echo "⚠️  Please edit .env with your API keys"; fi
-	docker-compose -f docker-compose.vulnerable.yml build
-	docker-compose -f docker-compose.secure.yml build
+build:
+	docker-compose build
 
-demo-vulnerable:
-	@echo "🔴 Starting VULNERABLE pen shop demo..."
-	docker-compose -f docker-compose.vulnerable.yml up -d
-	@echo "✅ Vulnerable demo running at:"
-	@echo "   Frontend: http://localhost:8080"
-	@echo "   API: http://localhost:3001"
-	@echo "   Demo attacks: http://localhost:8080/demo.html"
+demo:
+	docker-compose up -d
+	@echo "🖋️ Pen Shop running:"
+	@echo "  API: http://localhost:3001/api/pens"
+	@echo "  Web: http://localhost:3000"
 
-demo-secure:
-	@echo "🟢 Starting SECURE pen shop demo..."
-	docker-compose -f docker-compose.secure.yml up -d
-	@echo "✅ Secure demo running at:"
-	@echo "   Frontend: http://localhost:8081"
-	@echo "   API: http://localhost:3002"
-	@echo "   Security Dashboard: http://localhost:9001"
-
-run-attacks:
-	@echo "⚔️  Running attack demonstrations..."
-	./scripts/run-attacks.sh
-
-stop:
-	docker-compose -f docker-compose.vulnerable.yml down
-	docker-compose -f docker-compose.secure.yml down
+test:
+	curl -s http://localhost:3001/api/pens | jq '.pens[0]'
 
 clean:
-	docker-compose -f docker-compose.vulnerable.yml down -v
-	docker-compose -f docker-compose.secure.yml down -v
-	docker system prune -f
+	docker-compose down -v

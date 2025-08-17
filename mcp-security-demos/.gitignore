@@ -1,8 +1,0 @@
-.env
-node_modules/
-*.log
-.DS_Store
-*.tmp
-.env.local
-docker-compose.override.yml
-volumes/
