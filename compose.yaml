@@ -1,134 +1,138 @@
-services:
 
-  # Pen Shop Services
-  #
+services:
+  # Frontend with your custom UI
   pen-front-end:
     image: nginxinc/nginx-unprivileged:alpine
-    hostname: pen-front-end
     ports:
-      - 9091:8080
+      - "9091:8080"
     volumes:
-      - ./web-interface/index.html:/usr/share/nginx/html/index.html:ro
-    restart: always
-    user: "nginx"
-    cap_drop:
-      - all
-    volumes:
-    - ./nginx.conf:/etc/nginx/nginx.conf:ro
-
-  pen-catalogue:
-    build: ./pen-catalog-mcp
-    hostname: pen-catalogue
-    restart: always
-    cap_drop:
-      - all
-    cap_add:
-      - NET_BIND_SERVICE
-    read_only: false
-    ports:
-      - 8081:3001
+      - ./index.html:/usr/share/nginx/html/index.html:ro  # Serve your UI
+    networks:
+      - pen-shop-network
     depends_on:
-      - pen-catalogue-db
+      - pen-catalogue
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-  pen-catalogue-db:
-    image: mongo:latest
-    hostname: pen-catalogue-db
-    restart: always
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=password
-      - MONGO_INITDB_DATABASE=penstore
-    volumes:
-      - ./data/mongodb:/docker-entrypoint-initdb.d:ro
-      - mongodb_data:/data/db
-
-  # Customer Review Database
+  # Main MongoDB instance
   mongodb:
     image: mongo:latest
     ports:
-      - 27017:27017
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=password
-      - MONGO_INITDB_DATABASE=penstore
-    volumes:
-      - ./data/mongodb:/docker-entrypoint-initdb.d:ro
-      - mongodb_data:/data/db
-    command: [mongod, --quiet, --logpath, /var/log/mongodb/mongod.log, --logappend, --setParameter, "logComponentVerbosity={network:{verbosity:0}}"]
+    networks:
+      - pen-shop-network
     healthcheck:
-      test: [CMD, mongosh, --eval, db.adminCommand('ping')]
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # Agent
-  adk-ui:
+  # Separate MongoDB for pen-catalogue
+  pen-catalogue-db:
+    image: mongo:latest
+    ports:
+      - "27018:27017"
+    volumes:
+      - pen_catalogue_db_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    networks:
+      - pen-shop-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MCP Gateway
+  mcp-gateway:
+    image: docker/mcp-gateway:latest
+    ports:
+      - "8811:8811"
+    networks:
+      - pen-shop-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8811/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Pen Catalogue Service
+  pen-catalogue:
     build:
       context: .
-      dockerfile: Dockerfile.adk-ui
+      dockerfile: pen-catalogue/Dockerfile
+    image: pen-shop-demo-pen-catalogue
     ports:
-      - 3000:3000
+      - "8081:3001"
     environment:
-      - API_BASE_URL=http://adk:8000
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://admin:password@pen-catalogue-db:27017/pen-catalogue?authSource=admin
+    networks:
+      - pen-shop-network
     depends_on:
-      - adk
+      pen-catalogue-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
+  # ADK Service
   adk:
     build:
       context: .
+      dockerfile: adk/Dockerfile
+    image: pen-shop-demo-adk
     ports:
-      # expose port for web interface
-      - 8000:8000
+      - "8000:8000"
     environment:
-      # point adk at the MCP gateway
-      - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
-      - PEN_CATALOGUE_URL=http://pen-catalogue:8081
-      - OPENAI_BASE_URL=https://api.openai.com/v1
-      - AI_DEFAULT_MODEL=openai/gpt-4
-    depends_on:
-      - mcp-gateway
-    secrets:
-      - openai-api-key
-    models:
-      qwen3:
-        endpoint_var: MODEL_RUNNER_URL
-        model_var: MODEL_RUNNER_MODEL
+      - PYTHONPATH=/app
+    networks:
+      - pen-shop-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-  mcp-gateway:
-    # mcp-gateway secures your MCP servers
-    image: docker/mcp-gateway:latest
+  # ADK UI Service
+  adk-ui:
+    build:
+      context: .
+      dockerfile: adk-ui/Dockerfile
+    image: pen-shop-demo-adk-ui
     ports:
-      - 8811:8811
-    use_api_socket: true
-    command:
-      - --transport=sse
-      - --servers=fetch,paper-search,curl,mongodb
-      - --config=/mcp_config
-      - --secrets=docker-desktop:/run/secrets/mcp_secret
-      - --verbose
-    configs:
-      - mcp_config
-    secrets:
-      - mcp_secret
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_API_URL=http://localhost:8000
+    networks:
+      - pen-shop-network
     depends_on:
-      - mongodb
+      - adk
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-models:
-  qwen3:
-    # pre-pull the model when starting Docker Model Runner
-    model: ai/qwen3:14B-Q6_K
+networks:
+  pen-shop-network:
+    driver: bridge
 
 volumes:
   mongodb_data:
-
-configs:
-  mcp_config:
-    content: |
-      mongodb:
-        uri: mongodb://admin:password@mongodb:27017/penstore
-
-secrets:
-  openai-api-key:
-    file: secret.openai-api-key
-  mcp_secret:
-    file: ./.mcp.env
+    driver: local
+  pen_catalogue_db_data:
+    driver: local
