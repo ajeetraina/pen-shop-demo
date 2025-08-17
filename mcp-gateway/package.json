@@ -11,6 +11,7 @@
     "helmet": "^7.0.0",
     "express-rate-limit": "^7.1.5",
     "winston": "^3.11.0",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "js-yaml": "^4.1.0"
   }
 }

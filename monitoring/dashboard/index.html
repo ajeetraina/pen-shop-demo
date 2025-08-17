@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Security Dashboard</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <header>
+        <h1>🛡️ MCP Security Dashboard</h1>
+        <div class="status">
+            <span id="status-indicator" class="status-green">●</span>
+            <span>Security Gateway Active</span>
+        </div>
+    </header>
+
+    <main>
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <h3>Requests Today</h3>
+                <div class="metric-value" id="total-requests">0</div>
+            </div>
+            <div class="metric-card blocked">
+                <h3>Blocked Attacks</h3>
+                <div class="metric-value" id="blocked-requests">0</div>
+            </div>
+            <div class="metric-card">
+                <h3>Block Rate</h3>
+                <div class="metric-value" id="block-rate">0%</div>
+            </div>
+        </div>
+
+        <section class="events-section">
+            <h2>🚨 Security Events</h2>
+            <div id="security-events" class="events-container">
+                <!-- Events will be populated here -->
+            </div>
+        </section>
+    </main>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
