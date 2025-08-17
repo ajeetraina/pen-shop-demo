@@ -1,0 +1,95 @@
+services:
+  # Frontend (no build required)
+  pen-frontend:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./pen-shop/frontend:/usr/share/nginx/html:ro
+      - ./pen-shop/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - adk
+    restart: always
+
+  # MongoDB
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=penstore
+    volumes:
+      - ./data/mongodb:/docker-entrypoint-initdb.d:ro
+      - mongodb_data:/data/db
+    restart: always
+
+  # MCP Gateway
+  mcp-gateway:
+    image: docker/mcp-gateway:latest
+    ports:
+      - "8811:8811"
+    command:
+      - --transport=sse
+      - --servers=paper-search,mongodb,fetch,curl
+      - --verbose
+    environment:
+      - MCP_LOG_LEVEL=debug
+    depends_on:
+      - mongodb
+    restart: always
+
+  # ADK (using pre-built image to avoid build context issues)
+  adk:
+    image: node:18-alpine
+    working_dir: /app
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=development
+      - PORT=8000
+      - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
+    volumes:
+      - ./adk:/app/adk:ro
+      - ./package.json:/app/package.json:ro
+      - ./entrypoint.sh:/app/entrypoint.sh:ro
+    command: sh -c "npm install && chmod +x /app/entrypoint.sh && /app/entrypoint.sh"
+    depends_on:
+      - mcp-gateway
+    restart: always
+    models:
+      qwen3:
+        endpoint_var: MODEL_RUNNER_URL
+        model_var: MODEL_RUNNER_MODEL
+
+  # ADK UI (also using pre-built image)
+  adk-ui:
+    image: node:18-alpine
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - API_BASE_URL=http://adk:8000
+    volumes:
+      - ./adk-ui:/app/adk-ui:ro
+      - ./package.json:/app/package.json:ro
+    command: sh -c "npm install && node adk-ui/server.js"
+    depends_on:
+      - adk
+    restart: always
+
+# Models configuration
+models:
+  qwen3:
+    model: ai/qwen3:14B-Q6_K
+
+# Volumes
+volumes:
+  mongodb_data:
+
+# Secrets (optional)
+secrets:
+  openai-api-key:
+    file: ./secret.openai-api-key

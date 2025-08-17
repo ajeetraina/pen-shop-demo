@@ -1,54 +1,77 @@
-// Initialize secure pen store database
+// Secure MongoDB initialization script
+
+// Switch to penstore database
 db = db.getSiblingDB('penstore');
 
-// Create limited user
+// Create secure admin user
 db.createUser({
-  user: "penstore_user",
-  pwd: process.env.SECURE_DB_PASSWORD || "secure_random_password",
+  user: "secure_admin",
+  pwd: "SecureP@ssw0rd123!",
   roles: [
     { role: "readWrite", db: "penstore" }
   ]
 });
 
-// Create collections with sample data (no sensitive info)
+// Create collections with validation
+db.createCollection("pens", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["name", "price", "brand"],
+      properties: {
+        name: { bsonType: "string" },
+        price: { bsonType: "number", minimum: 0 },
+        brand: { bsonType: "string" },
+        description: { bsonType: "string" }
+      }
+    }
+  }
+});
+
+db.createCollection("customers", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["email", "name"],
+      properties: {
+        email: { bsonType: "string", pattern: "^.+@.+$" },
+        name: { bsonType: "string" },
+        phone: { bsonType: "string" }
+      }
+    }
+  }
+});
+
+// Insert sample secure data
 db.pens.insertMany([
   {
     _id: ObjectId(),
-    name: "Montblanc Meisterstück 149", 
-    brand: "Montblanc",
-    price: 745,
-    category: "luxury", 
-    description: "Premium fountain pen with 14k gold nib",
-    in_stock: true
+    name: "Secure Fountain Pen",
+    brand: "SecurePens Inc",
+    price: 299.99,
+    description: "High-security fountain pen with encrypted ink",
+    stock: 25,
+    category: "luxury"
   },
   {
     _id: ObjectId(),
-    name: "Parker Duofold Centennial",
-    brand: "Parker",
-    price: 425,
-    category: "premium",
-    description: "Classic design with modern engineering", 
-    in_stock: true
+    name: "Privacy Ballpoint",
+    brand: "SecurePens Inc", 
+    price: 49.99,
+    description: "Ballpoint pen with privacy features",
+    stock: 100,
+    category: "office"
   }
 ]);
 
-// Secure: Limited customer data (no sensitive fields)
 db.customers.insertMany([
   {
     _id: ObjectId(),
-    name: "John Doe",
-    email: "john@example.com", 
-    phone: "555-0123",
-    created_at: new Date()
+    name: "Secure Customer",
+    email: "secure@example.com",
+    phone: "+1-555-0123",
+    preferences: ["luxury", "security"]
   }
 ]);
 
-// Audit log for security monitoring
-db.audit_log.insertOne({
-  _id: ObjectId(),
-  event: "database_initialized",
-  timestamp: new Date(),
-  security_level: "secure"
-});
-
-print("Secure pen store database initialized!");
+print("✅ Secure database initialized successfully");
