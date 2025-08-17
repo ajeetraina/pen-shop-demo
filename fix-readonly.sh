@@ -1,3 +1,137 @@
+#!/bin/bash
+
+# Fix the read-only file system issue with entrypoint
+
+set -e
+
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+print_status() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+print_success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
+
+echo "🔧 Fixing read-only file system issue..."
+
+# Stop the containers
+print_status "Stopping containers..."
+docker compose down
+
+# Fix 1: Make entrypoint executable on host
+print_status "Making entrypoint executable on host..."
+chmod +x entrypoint.sh
+
+# Fix 2: Update compose.yaml to use simpler command without chmod
+print_status "Updating compose.yaml to avoid chmod issues..."
+cat > compose.yaml << 'EOF'
+services:
+  # Frontend
+  pen-frontend:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./pen-shop/frontend:/usr/share/nginx/html:ro
+      - ./pen-shop/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - adk
+    restart: always
+
+  # MongoDB
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=penstore
+    volumes:
+      - ./data/mongodb:/docker-entrypoint-initdb.d:ro
+      - mongodb_data:/data/db
+    restart: always
+
+  # MCP Gateway
+  mcp-gateway:
+    image: docker/mcp-gateway:latest
+    ports:
+      - "8811:8811"
+    command:
+      - --transport=sse
+      - --servers=paper-search,mongodb,fetch,curl
+      - --verbose
+    environment:
+      - MCP_LOG_LEVEL=debug
+    depends_on:
+      - mongodb
+    restart: always
+
+  # ADK (simplified command - no chmod needed)
+  adk:
+    image: node:18-alpine
+    working_dir: /app
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=development
+      - PORT=8000
+      - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
+      - OPENAI_BASE_URL=http://localhost:11434
+    volumes:
+      - ./adk:/app/adk:ro
+      - ./package.json:/app/package.json:ro
+    # Simplified command - directly run node without entrypoint script
+    command: sh -c "npm install && echo '🖋️ Starting Pen Shop ADK...' && node adk/server.js"
+    depends_on:
+      - mcp-gateway
+    restart: always
+    models:
+      qwen3:
+        endpoint_var: MODEL_RUNNER_URL
+        model_var: MODEL_RUNNER_MODEL
+
+  # ADK UI (also simplified)
+  adk-ui:
+    image: node:18-alpine
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - API_BASE_URL=http://adk:8000
+    volumes:
+      - ./adk-ui:/app/adk-ui:ro
+      - ./package.json:/app/package.json:ro
+    command: sh -c "npm install && echo '🎛️ Starting ADK UI...' && node adk-ui/server.js"
+    depends_on:
+      - adk
+    restart: always
+
+# Models configuration
+models:
+  qwen3:
+    model: ai/qwen3:14B-Q6_K
+
+# Volumes
+volumes:
+  mongodb_data:
+
+# Secrets (optional)
+secrets:
+  openai-api-key:
+    file: ./secret.openai-api-key
+EOF
+
+print_success "Updated compose.yaml with simplified commands"
+
+# Fix 3: Update ADK server to handle model configuration directly
+print_status "Updating ADK server to handle environment variables..."
+cat > adk/server.js << 'EOF'
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -175,3 +309,22 @@ process.on('SIGTERM', () => {
     console.log('🛑 Received SIGTERM, shutting down gracefully');
     process.exit(0);
 });
+EOF
+
+print_success "Updated ADK server with better error handling"
+
+print_success "🎉 Read-only file system issue fixed!"
+
+echo ""
+echo "🚀 Start the services again:"
+echo "   docker compose up -d"
+echo ""
+echo "🧪 Test the fixed endpoints:"
+echo "   curl http://localhost:8000/health"
+echo "   curl -X POST http://localhost:8000/search -H 'Content-Type: application/json' -d '{\"query\":\"machine learning\"}'"
+echo ""
+echo "🌐 Access points:"
+echo "   Frontend:  http://localhost:8080"
+echo "   ADK:       http://localhost:8000"
+echo "   ADK UI:    http://localhost:3000"
+echo ""

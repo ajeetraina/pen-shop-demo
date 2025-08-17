@@ -25,24 +25,26 @@ services:
       - mongodb_data:/data/db
     restart: always
 
-  # MCP Gateway (with Docker socket access)
+  # Paper Search MCP Server (standalone)
+  paper-search:
+    image: mcp/paper-search:latest
+    restart: always
+    stdin_open: true
+    tty: true
+
+  # MCP Gateway (simplified)
   mcp-gateway:
     image: docker/mcp-gateway:latest
     ports:
       - "8811:8811"
-    # KEY FIX: Mount Docker socket so MCP Gateway can start MCP servers
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
     command:
       - --transport=sse
-      - --servers=paper-search,mongodb,fetch,curl
       - --verbose
     environment:
-      - MCP_LOG_LEVEL=debug
-      # Tell MCP Gateway how to connect to MongoDB
-      - MONGODB_URL=mongodb://admin:password@mongodb:27017/penstore?authSource=admin
+      - MCP_LOG_LEVEL=info
     depends_on:
       - mongodb
+      - paper-search
     restart: always
 
   # ADK
@@ -55,7 +57,6 @@ services:
       - NODE_ENV=development
       - PORT=8000
       - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
-      - OPENAI_BASE_URL=http://localhost:11434
     volumes:
       - ./adk:/app/adk:ro
       - ./package.json:/app/package.json:ro

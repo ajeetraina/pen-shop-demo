@@ -1,0 +1,36 @@
+# MCP Gateway Configuration
+servers:
+  paper-search:
+    enabled: true
+    image: mcp/paper-search:latest
+    transport: stdio
+    timeout: 30s
+    
+  mongodb:
+    enabled: true
+    image: mcp/mongodb:latest
+    transport: stdio
+    environment:
+      - MDB_MCP_CONNECTION_STRING=mongodb://admin:password@mongodb:27017/penstore?authSource=admin
+    timeout: 30s
+    
+  fetch:
+    enabled: true
+    image: mcp/fetch:latest
+    transport: stdio
+    timeout: 30s
+    
+  curl:
+    enabled: true
+    image: alpine/curl:latest
+    transport: stdio
+    timeout: 30s
+
+logging:
+  level: debug
+  
+security:
+  allow_docker_socket: true
+  resource_limits:
+    memory: "2Gb"
+    cpu: "1"
