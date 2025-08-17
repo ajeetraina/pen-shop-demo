@@ -6,7 +6,7 @@ services:
     image: nginx:alpine
     hostname: pen-front-end
     ports:
-      - 9090:80
+      - 9091:80
     volumes:
       - ./web-interface/index.html:/usr/share/nginx/html/index.html:ro
     restart: always
