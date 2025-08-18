@@ -116,21 +116,17 @@
             color: #155724;
         }
         
+        .low-stock {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
         .endpoint {
             background: #f8f9fa;
             padding: 10px;
             border-radius: 5px;
             font-family: monospace;
             margin: 5px 0;
-        }
-        
-        .category {
-            background: #fff3cd;
-            color: #856404;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            display: inline-block;
         }
     </style>
 </head>
@@ -149,13 +145,15 @@
             <p><strong>MCP Gateway:</strong> <a href="http://localhost:8080">http://localhost:8080</a></p>
             
             <h3>Available Endpoints:</h3>
-            <div class="endpoint">GET /api/pens - List all pens</div>
-            <div class="endpoint">GET /api/pens/:id - Get specific pen</div>
-            <div class="endpoint">GET /health - API health check</div>
+            <div class="endpoint">GET /catalogue - List all pens</div>
+            <div class="endpoint">GET /catalogue/:id - Get specific pen</div>
+            <div class="endpoint">GET /brands - List all brands</div>
+            <div class="endpoint">GET /types - List all pen types</div>
+            <div class="endpoint">GET /search?q=term - Search pens</div>
         </div>
 
         <div class="pen-grid" id="penGrid">
-            <div>Loading pens...</div>
+            <!-- Pens will be loaded here -->
         </div>
     </div>
 
@@ -163,54 +161,35 @@
         // Load pens from API
         async function loadPens() {
             try {
-                console.log('Loading pens from API...');
-                const response = await fetch('http://localhost:9092/api/pens');
-                console.log('API Response status:', response.status);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                
+                const response = await fetch('http://localhost:9092/catalogue');
                 const data = await response.json();
-                console.log('API Data:', data);
-                
-                if (data.success && data.pens) {
-                    displayPens(data.pens);
-                } else {
-                    throw new Error('Invalid API response format');
-                }
+                displayPens(data.pens);
             } catch (error) {
                 console.error('Error loading pens:', error);
                 document.getElementById('penGrid').innerHTML = 
-                    `<div style="grid-column: 1/-1; text-align: center; padding: 20px; background: #fff3cd; border-radius: 8px;">
-                        <h3>⚠️ Unable to load pens</h3>
-                        <p>API Error: ${error.message}</p>
-                        <p>Make sure the pen-catalogue service is running on port 9092</p>
-                        <button onclick="loadPens()" class="btn" style="margin-top: 10px;">🔄 Retry</button>
-                    </div>`;
+                    '<p>Unable to load pens. Make sure the API is running on port 9092.</p>';
             }
         }
 
         function displayPens(pens) {
-            console.log('Displaying pens:', pens.length);
             const grid = document.getElementById('penGrid');
             grid.innerHTML = pens.map(pen => `
                 <div class="pen-card">
                     <div class="pen-brand">${pen.brand}</div>
                     <div class="pen-name">${pen.name}</div>
-                    <div class="category">${pen.category}</div>
                     <p>${pen.description}</p>
-                    <div class="pen-price">$${pen.price}</div>
-                    <div class="status in-stock">
-                        ${pen.in_stock ? '✅ In Stock' : '❌ Out of Stock'} (${pen.stock_count})
-                    </div>
+                    <div class="pen-price">$${pen.price.toFixed(2)}</div>
+                    <div class="status ${pen.availability.replace('_', '-')}">${pen.availability.replace('_', ' ')}</div>
+                    <p><strong>Quantity:</strong> ${pen.quantity}</p>
+                    <p><strong>Type:</strong> ${pen.type}</p>
+                    ${pen.nib ? `<p><strong>Nib:</strong> ${pen.nib}</p>` : ''}
                     <button class="btn" onclick="viewPen('${pen.id}')">View Details</button>
                 </div>
             `).join('');
         }
 
         function viewPen(id) {
-            window.open(`http://localhost:9092/api/pens/${id}`, '_blank');
+            window.open(`http://localhost:9092/catalogue/${id}`, '_blank');
         }
 
         // Load pens when page loads

@@ -1,0 +1,20 @@
+{
+  "name": "pen-catalogue-api",
+  "version": "1.0.0",
+  "description": "Pen Shop Catalogue HTTP API",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "Pen Shop Demo",
+  "license": "MIT"
+}

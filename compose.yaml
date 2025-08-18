@@ -1,5 +1,5 @@
 services:
-  # Frontend with your custom UI
+  # Pen Shop Frontend
   pen-front-end:
     image: nginxinc/nginx-unprivileged:alpine
     ports:
@@ -8,110 +8,57 @@ services:
       - ./index.html:/usr/share/nginx/html/index.html:ro
     networks:
       - pen-shop-network
+
+  # Pen Catalog HTTP API (like sock-shop catalogue)
+  pen-catalogue:
+    build: ./pen-catalogue
+    ports:
+      - "9092:8080"
+    environment:
+      - PORT=8080
+    networks:
+      - pen-shop-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s
       timeout: 10s
       retries: 3
 
-  # Main MongoDB instance
-  mongodb:
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=password
-      - MONGO_INITDB_DATABASE=penstore
-    networks:
-      - pen-shop-network
-    command: [mongod, --quiet, --logpath, /var/log/mongodb/mongod.log, --logappend]
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # Pen Catalogue MCP Server (builds image for MCP Gateway to use)
-  pen-catalogue-mcp:
-    build:
-      context: ./pen-catalog-mcp
-      dockerfile: Dockerfile
-    image: pen-shop-demo-pen-catalogue-mcp
-    # This service doesn't run standalone - it's used by MCP Gateway
-    profiles:
-      - build-only
-
-  # MCP Gateway - properly configured
+  # MCP Gateway - Following Sock-Shop Pattern
   mcp-gateway:
     image: docker/mcp-gateway:latest
     ports:
-      - "8811:8811"
-    networks:
-      - pen-shop-network
+      - "8080:8080"
+    environment:
+      - MCP_GATEWAY_PORT=8080
     command:
       - --transport=sse
-      - --servers=pen-catalog,mongodb,fetch
-      - --config=/mcp_config
-      - --secrets=docker-desktop:/run/secrets/mcp_secret
-      - --verbose
-    configs:
-      - mcp_config
-    secrets:
-      - mcp_secret
+      - --port=8080
+      - --servers=fetch,brave,mongodb,curl
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - pen-shop-network
     depends_on:
       - mongodb
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8811/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s
       timeout: 10s
       retries: 3
 
-  # ADK Service - properly configured to use MCP Gateway
-  adk:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  # MongoDB for MCP servers
+  mongodb:
+    image: mongo:7
     ports:
-      - "8000:8000"
+      - "27017:27017"
     environment:
-      - PYTHONPATH=/app
-      - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
-      - OPENAI_BASE_URL=https://api.openai.com/v1
-      - AI_DEFAULT_MODEL=openai/gpt-4
+      - MONGO_INITDB_DATABASE=penstore
+    volumes:
+      - mongodb_data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     networks:
       - pen-shop-network
-    depends_on:
-      - mcp-gateway
-    secrets:
-      - openai-api-key
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # ADK UI Service
-  adk-ui:
-    build:
-      context: .
-      dockerfile: Dockerfile.adk-ui
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - API_BASE_URL=http://adk:8000
-    networks:
-      - pen-shop-network
-    depends_on:
-      - adk
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
 networks:
   pen-shop-network:
@@ -119,36 +66,3 @@ networks:
 
 volumes:
   mongodb_data:
-    driver: local
-
-# MCP Gateway Configuration
-configs:
-  mcp_config:
-    content: |
-      pen-catalog:
-        enabled: true
-        command: ["node", "pen-catalog-server.js"]
-        image: pen-shop-demo-pen-catalogue-mcp
-        transport: stdio
-        timeout: 30s
-      
-      mongodb:
-        enabled: true
-        image: mcp/mongodb:latest
-        transport: stdio
-        environment:
-          - MDB_MCP_CONNECTION_STRING=mongodb://admin:password@mongodb:27017/penstore?authSource=admin
-        timeout: 30s
-        
-      fetch:
-        enabled: true
-        image: mcp/fetch:latest
-        transport: stdio
-        timeout: 30s
-
-# Secrets for API keys and MCP configuration
-secrets:
-  openai-api-key:
-    file: secret.openai-api-key
-  mcp_secret:
-    file: ./.mcp.env

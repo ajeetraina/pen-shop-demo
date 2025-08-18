@@ -1,3 +1,9 @@
+#!/bin/bash
+
+echo "🔧 Fixing frontend JavaScript API calls..."
+
+# Create the corrected index.html with proper API calls
+cat > index.html << 'EOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -218,3 +224,17 @@
     </script>
 </body>
 </html>
+EOF
+
+echo "✅ Frontend JavaScript updated to use /api/pens"
+echo "🔄 Restarting frontend container..."
+
+# Restart frontend to pick up changes
+docker compose restart pen-front-end
+
+echo "⏳ Waiting for frontend to start..."
+sleep 3
+
+echo "🌐 Frontend ready! Visit: http://localhost:9091"
+echo "🧪 Testing API endpoint:"
+curl -s http://localhost:9092/api/pens | jq '.total_pens'
