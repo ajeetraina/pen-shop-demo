@@ -1,6 +1,6 @@
 # 🖋️ Pen Shop Demo
 
-A demo e-commerce application for premium writing instruments, built following the **sock-shop pattern** for MCP Gateway integration.
+A demo e-commerce application for premium writing instruments.
 
 ## 🏗️ Architecture
 
