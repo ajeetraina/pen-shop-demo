@@ -1,3 +1,12 @@
+#!/bin/bash
+
+echo "📄 Switching from Brave to Paper Search MCP Server..."
+echo ""
+
+# Update compose.yaml to use paper-search instead of brave
+echo "🔧 Updating MCP Gateway configuration..."
+
+cat > compose.yaml << 'EOF'
 services:
   # Pen Shop Frontend
   pen-front-end:
@@ -66,3 +75,47 @@ networks:
 
 volumes:
   mongodb_data:
+EOF
+
+echo "✅ Updated MCP Gateway to use paper-search"
+echo ""
+
+# Update the README to reflect the change
+echo "📝 Updating documentation..."
+
+sed -i.bak 's/brave (web search)/paper-search (academic paper search)/g' README.md
+
+echo "✅ Updated README documentation"
+echo ""
+
+echo "🚀 Restart MCP Gateway to apply changes:"
+echo "   docker compose restart mcp-gateway"
+echo ""
+
+echo "⏳ Restarting MCP Gateway now..."
+docker compose restart mcp-gateway
+
+echo ""
+echo "⏱️  Waiting for MCP Gateway to start..."
+sleep 5
+
+echo ""
+echo "🧪 Testing MCP Gateway with new configuration..."
+curl -s http://localhost:8080 | head -1
+
+echo ""
+echo "📋 Checking MCP Gateway logs..."
+docker compose logs --tail=10 mcp-gateway
+
+echo ""
+echo "🎯 Updated MCP Servers:"
+echo "   • fetch (web scraping)"
+echo "   • paper-search (academic papers) 📄"
+echo "   • mongodb (database)"
+echo "   • curl (HTTP requests)"
+echo ""
+echo "✨ Perfect for a pen shop - users can search for papers about:"
+echo "   📝 Writing instruments research"
+echo "   🖋️ Calligraphy studies"
+echo "   📚 Stationery manufacturing papers"
+echo "   🎨 Typography and design research"
