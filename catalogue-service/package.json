@@ -1,0 +1,16 @@
+{
+  "name": "pen-catalogue-service",
+  "version": "1.0.0",
+  "description": "Pen Shop Catalogue API Service",
+  "main": "src/server.js",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mysql2": "^3.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  }
+}

@@ -1,0 +1,33 @@
+# API Keys and Secrets
+secret.openai-api-key
+*.key
+*.pem
+.env
+.env.*
+
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Build outputs
+build/
+dist/
+*/build/
+*/dist/
+
+# Logs
+*.log
+logs/
+
+# Database volumes
+mysql_data/
+mongodb_data/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db

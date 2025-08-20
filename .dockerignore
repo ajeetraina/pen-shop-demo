@@ -1,0 +1,8 @@
+.git
+.env
+*.md
+.DS_Store
+node_modules
+__pycache__
+*.pyc
+.pytest_cache
