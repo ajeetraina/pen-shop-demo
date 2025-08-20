@@ -1,40 +1,55 @@
 services:
-  # Pen Store front-end (adapted from sock shop)
-  front-end:
-    image: weaveworksdemos/front-end:0.3.12
-    hostname: front-end
+  # Custom Pen Store Frontend
+  pen-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    hostname: pen-frontend
     ports:
-      - 9090:8079
+      - 9090:80
     restart: always
-    cap_drop:
-      - all
-    read_only: true
+    environment:
+      - CATALOGUE_SERVICE_HOST=pen-catalogue
+      - CATALOGUE_SERVICE_PORT=8081
+      - API_BASE_URL=http://pen-catalogue:8081
+    depends_on:
+      - pen-catalogue
 
-  # Pen catalogue service
-  catalogue:
-    image: roberthouse224/catalogue:amd
-    hostname: catalogue
+  # Custom Pen Catalogue Service
+  pen-catalogue:
+    build:
+      context: ./catalogue-service
+      dockerfile: Dockerfile
+    hostname: pen-catalogue
     restart: always
-    cap_drop:
-      - all
-    cap_add:
-      - NET_BIND_SERVICE
-    read_only: true
     ports:
-      - 8081:80
+      - 8081:8081
+    environment:
+      - MYSQL_HOST=catalogue-db
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=pendb
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=${MYSQL_ROOT_PASSWORD:-password}
     depends_on:
       - catalogue-db
 
+  # MySQL Database for Pen Catalogue
   catalogue-db:
-    image: weaveworksdemos/catalogue-db:0.3.0
+    image: mysql:8.0
     hostname: catalogue-db
     restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_ALLOW_EMPTY_PASSWORD=true
-      - MYSQL_DATABASE=penstore
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-password}
+      - MYSQL_DATABASE=pendb
+      - MYSQL_USER=penuser
+      - MYSQL_PASSWORD=penpass
+    volumes:
+      - ./data/mysql-init:/docker-entrypoint-initdb.d:ro
+      - mysql_data:/var/lib/mysql
+    ports:
+      - 3306:3306
 
-  # Customer Review Database
+  # MongoDB for Reviews and Agent Data
   mongodb:
     image: mongo:latest
     ports:
@@ -44,42 +59,46 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=password
       - MONGO_INITDB_DATABASE=penstore
     volumes:
-      - ./data/mongodb:/docker-entrypoint-initdb.d:ro
+      - ./data/mongodb-init:/docker-entrypoint-initdb.d:ro
       - mongodb_data:/data/db
-    command: [mongod, --quiet, --logpath, /var/log/mongodb/mongod.log, --logappend, --setParameter, "logComponentVerbosity={network:{verbosity:0}}"]
+    command: [mongod, --quiet, --logpath, /var/log/mongodb/mongod.log, --logappend]
     healthcheck:
-      test: [CMD, mongosh, --eval, db.adminCommand('ping')]
+      test: [CMD, mongosh, --eval, "db.adminCommand('ping')"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # Agent UI
+  # Agent UI (React App)
   adk-ui:
     build:
-      context: .
-      dockerfile: Dockerfile.adk-ui
+      context: ./adk-ui
+      dockerfile: Dockerfile
     ports:
       - 3000:3000
     environment:
-      - API_BASE_URL=http://adk:8000
+      - REACT_APP_API_BASE_URL=http://localhost:8000
+      - REACT_APP_STORE_NAME=Luxury Pen Shop
+      - REACT_APP_CATALOGUE_URL=http://localhost:8081
     depends_on:
-      - adk
+      - adk-backend
 
-  # Agent
-  adk:
+  # Agent Backend (Go with ADK)
+  adk-backend:
     build:
-      context: .
+      context: ./adk-backend
+      dockerfile: Dockerfile
     ports:
-      # expose port for web interface
       - 8000:8000
     environment:
-      # point adk at the MCP gateway
       - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
-      - CATALOGUE_URL=http://catalogue:8081
+      - CATALOGUE_URL=http://pen-catalogue:8081
+      - MONGODB_URI=mongodb://admin:password@mongodb:27017/penstore
       - OPENAI_BASE_URL=https://api.openai.com/v1
-      - AI_DEFAULT_MODEL=gpt-4
+      - AI_DEFAULT_MODEL=openai/gpt-4
     depends_on:
       - mcp-gateway
+      - pen-catalogue
+      - mongodb
     secrets:
       - openai-api-key
     models:
@@ -87,42 +106,39 @@ services:
         endpoint_var: MODEL_RUNNER_URL
         model_var: MODEL_RUNNER_MODEL
 
+  # MCP Gateway
   mcp-gateway:
-    # mcp-gateway secures your MCP servers
     image: docker/mcp-gateway:latest
     ports:
       - 8811:8811
     use_api_socket: true
     command:
       - --transport=sse
-      - --servers=fetch,brave,resend,curl,mongodb
+      - --servers=fetch,brave,curl,mongodb
       - --config=/mcp_config
-      - --secrets=docker-desktop:/run/secrets/mcp_secret
       - --verbose
     configs:
       - mcp_config
-    secrets:
-      - mcp_secret
     depends_on:
       - mongodb
 
 models:
   qwen3:
-    # pre-pull the model when starting Docker Model Runner
-    model: ai/qwen3:4b
+    model: ai/qwen3:14B-Q6_K
+    context_size: 32768
 
 volumes:
+  mysql_data:
   mongodb_data:
 
 configs:
   mcp_config:
     content: |
-      resend:
-        reply_to: slimslenderslacks@gmail.com
-        sender: slimslenderslacks@slimslenderslacks.com
+      mongodb:
+        connection_string: mongodb://admin:password@mongodb:27017/penstore
+      brave:
+        api_key: ${BRAVE_API_KEY}
 
 secrets:
   openai-api-key:
     file: secret.openai-api-key
-  mcp_secret:
-    file: ./.mcp.env
