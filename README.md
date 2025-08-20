@@ -197,7 +197,7 @@ The AI shopping assistant provides:
 I need a fountain pen for daily journaling
 ```
 ```
-Something under $50?
+I Liked Montblanc
 ```
 
 
