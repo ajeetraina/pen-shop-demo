@@ -154,11 +154,7 @@ pen-shop-platform/
 
 3. **Start the platform:**
    ```bash
-   # Make startup script executable
-   chmod +x start.sh
-   
-   # Launch all services
-   ./start.sh
+   docker compose up -d --build
    ```
 
 4. **Access the applications:**
