@@ -1,23 +1,35 @@
-.PHONY: help build demo test clean
+.PHONY: help setup demo-local demo-secure clean logs health
 
 help:
-	@echo "Pen Shop Demo (following compose-for-agents pattern):"
-	@echo "  make build  - Build containers"  
-	@echo "  make demo   - Run demo"
-	@echo "  make test   - Test API"
-	@echo "  make clean  - Clean up"
+	@echo "🖋️ Pen Shop Demo Commands"
+	@echo ""
+	@echo "setup        - Initial setup"
+	@echo "demo-local   - Run with local model"
+	@echo "demo-secure  - Run secure demo"
+	@echo "clean        - Clean up"
+	@echo "logs         - Show logs"
+	@echo "health       - Check health"
 
-build:
-	docker-compose build
+setup:
+	@echo "🔧 Setting up pen shop demo..."
+	@cp .env.example .env || echo ".env exists"
+	@echo "✅ Setup complete!"
 
-demo:
-	docker-compose up -d
-	@echo "🖋️ Pen Shop running:"
-	@echo "  API: http://localhost:3001/api/pens"
-	@echo "  Web: http://localhost:3000"
+demo-local:
+	@echo "🚀 Starting secure pen shop demo..."
+	@docker compose up --build
 
-test:
-	curl -s http://localhost:3001/api/pens | jq '.pens[0]'
+demo-secure: demo-local
 
 clean:
-	docker-compose down -v
+	@echo "🧹 Cleaning up..."
+	@docker compose down -v
+	@docker system prune -f
+
+logs:
+	@docker compose logs -f
+
+health:
+	@echo "🏥 Checking health..."
+	@curl -s http://localhost:8000/health || echo "❌ Agent down"
+	@curl -s http://localhost:3000/health || echo "❌ UI down"

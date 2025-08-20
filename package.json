@@ -1,0 +1,12 @@
+{
+  "name": "pen-shop-ui",
+  "version": "1.0.0",
+  "main": "ui/server.js",
+  "scripts": {
+    "start": "node ui/server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.2"
+  }
+}

@@ -2,38 +2,19 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Create a simple React-like web interface
-RUN npm init -y && npm install express cors
+# Copy package files
+COPY package*.json ./
+RUN npm ci --only=production
 
-# Create simple web server
-COPY <<EOL ./server.js
-const express = require('express');
-const cors = require('cors');
-const app = express();
+# Copy app source
+COPY ui/ ./
 
-app.use(cors());
-app.use(express.static('public'));
-
-app.get('/', (req, res) => {
-  res.send(\`
-    <html>
-      <head><title>Pen Shop ADK UI</title></head>
-      <body>
-        <h1>🖋️ Pen Shop - ADK Interface</h1>
-        <div id="content">
-          <p>ADK Agent Interface</p>
-          <p>API Base: \${process.env.API_BASE_URL || 'http://localhost:8000'\}\</p\>
-        </div>
-      </body>
-    </html>
-  \`);
-});
-
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(\`ADK UI running on port \${port}\`);
-});
-EOL
-
+# Expose port
 EXPOSE 3000
-CMD ["node", "server.js"]
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:3000/health || exit 1
+
+# Run the application
+CMD ["npm", "start"]

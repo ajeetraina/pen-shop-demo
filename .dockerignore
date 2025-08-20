@@ -1,37 +1,8 @@
-# Absolute exclusions for Trash folder issue
-**/.Trash
-/.Trash
-**/Trash
-/Trash
-**/.DS_Store
-/.DS_Store
-
-# Exclude user home directory contents that cause permission issues
-/.bash_history
-/.ssh
-/.aws
-/.docker
-/.config
-/.cache
-/.local
-/.npm
-/.yarn
-
-# Standard exclusions
-**/node_modules
-**/.git
-**/*.log
-**/tmp
-**/temp
-**/.env*
-
-# Only include what we explicitly need
-*
-!adk
-!adk-ui
-!pen-shop
-!data
-!package.json
-!entrypoint.sh
-!.mcp.env
-!secret.openai-api-key
+.git
+.env
+*.md
+.DS_Store
+node_modules
+__pycache__
+*.pyc
+.pytest_cache

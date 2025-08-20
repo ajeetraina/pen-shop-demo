@@ -1,0 +1,10 @@
+.env
+secret.*
+secrets/
+node_modules/
+__pycache__/
+*.pyc
+.pytest_cache/
+.vscode/
+.DS_Store
+mongodb_data/

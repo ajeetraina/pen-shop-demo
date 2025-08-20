@@ -1,0 +1,30 @@
+# Override compose.yaml to use OpenAI instead of local model
+# Usage: docker compose -f compose.yaml -f compose.openai.yaml up
+
+services:
+  adk:
+    environment:
+      # Override to use OpenAI API
+      - OPENAI_BASE_URL=https://api.openai.com/v1
+      - OPENAI_MODEL_NAME=gpt-4
+      - OPENAI_API_KEY_FILE=/run/secrets/openai-api-key
+      
+      # Keep pen shop config
+      - MCP_GATEWAY_URL=http://mcp-gateway:8811/sse
+      - SHOP_NAME=Premium Pen Emporium
+      - SHOP_DESCRIPTION=Luxury writing instruments and fountain pens
+      - INVENTORY_DB=pen_inventory
+      
+    secrets:
+      - openai-api-key
+    # Remove model dependency when using OpenAI
+    depends_on:
+      - mcp-gateway
+
+# Remove local model when using OpenAI
+models: {}
+
+# Add OpenAI API key secret
+secrets:
+  openai-api-key:
+    file: ./secrets/openai-api-key.txt
