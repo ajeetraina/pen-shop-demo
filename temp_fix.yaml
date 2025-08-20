@@ -1,0 +1,18 @@
+# If you prefer to keep read_only: true, use this version instead:
+# Just replace the pen-front-end service with:
+#
+# pen-front-end:
+#   image: nginx:alpine
+#   hostname: pen-front-end
+#   ports:
+#     - 9090:80
+#   volumes:
+#     - ./web-interface/index.html:/usr/share/nginx/html/index.html:ro
+#   restart: always
+#   cap_drop:
+#     - all
+#   read_only: true
+#   tmpfs:
+#     - /var/cache/nginx
+#     - /var/run
+#     - /tmp

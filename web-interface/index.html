@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pen Shop</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .pen { border: 1px solid #ddd; padding: 15px; margin: 10px 0; }
+        .price { font-weight: bold; color: #007bff; }
+    </style>
+</head>
+<body>
+    <h1>🖋️ Pen Shop</h1>
+    <div id="pens">Loading...</div>
+    
+    <script>
+        fetch('http://localhost:3001/api/pens')
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('pens').innerHTML = 
+                    data.pens.map(pen => `
+                        <div class="pen">
+                            <h3>${pen.name}</h3>
+                            <p>${pen.description}</p>
+                            <p class="price">$${pen.price}</p>
+                        </div>
+                    `).join('');
+            });
+    </script>
+</body>
+</html>
