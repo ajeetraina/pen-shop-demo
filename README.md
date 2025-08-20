@@ -199,6 +199,12 @@ I need a fountain pen for daily journaling
 ```
 I Liked Montblanc
 ```
+```
+What's the difference between ballpoint and rollerball?
+```
+```
+Show me luxury pens under $100
+```
 
 
 ```
