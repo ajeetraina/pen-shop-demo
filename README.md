@@ -174,38 +174,7 @@ pen-shop-platform/
 | `catalogue-db` | MySQL 8.0 | 3306 | Product database |
 | `mongodb` | MongoDB | 27017 | Reviews & AI data |
 
-## 🖊️ Pen Inventory
 
-Our luxury collection includes:
-
-### **Premium Brands**
-- **Montblanc** ($285-$895)
-  - StarWalker Black Mystery Rollerball
-  - Meisterstück 149 Fountain Pen
-  - Pix Blue Edition Ballpoint
-
-- **Parker** ($45-$125)
-  - Jotter Premium Stainless Steel
-  - Urban Premium Ebony CT
-  - Sonnet Stainless Steel GT
-
-- **Waterman** ($95-$180)
-  - Expert Deluxe Black GT
-  - Hemisphere Stainless Steel CT
-
-- **Cross** ($55-$75)
-  - Century Classic Lustrous Chrome
-  - Bailey Light Blue Lacquer
-
-- **Pilot** ($12-$165)
-  - G2 Premium Retractable Gel
-  - Vanishing Point Black Fountain
-
-### **Pen Types**
-- **Fountain Pens**: Traditional elegance, perfect for signatures
-- **Ballpoint Pens**: Reliable everyday writing
-- **Rollerball Pens**: Smooth ink flow, premium feel
-- **Gel Pens**: Vibrant colors, comfortable grip
 
 ## 🤖 AI Assistant Capabilities
 
@@ -225,15 +194,13 @@ The AI shopping assistant provides:
 
 ### **Sample Conversations**
 ```
-👤 "I need a fountain pen for daily journaling"
-🤖 "For daily journaling, I recommend the Waterman Expert ($180) 
-    or Parker Sonnet ($125). Both have smooth medium nibs perfect 
-    for extended writing sessions. What's your budget range?"
+I need a fountain pen for daily journaling
+```
+```
+Something under $50?
+```
 
-👤 "Something under $50?"  
-🤖 "The Parker Jotter Premium ($45.99) is perfect! It's a reliable 
-    ballpoint that writes smoothly and feels premium. Great for 
-    daily use and very durable."
+
 ```
 
 ## 🛠️ Development
