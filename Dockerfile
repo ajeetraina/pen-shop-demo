@@ -2,49 +2,28 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install ADK dependencies
-RUN pip install --no-cache-dir \
-    fastapi \
-    uvicorn \
-    requests \
-    pydantic
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Create simple ADK agent structure
-COPY <<EOL ./main.py
-from fastapi import FastAPI
-import os
+# Copy requirements and install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-app = FastAPI(title="Pen Shop ADK Agent")
+# Copy application code
+COPY . .
 
-@app.get("/")
-def root():
-    return {
-        "service": "pen-shop-adk-agent",
-        "status": "running",
-        "mcp_gateway": os.getenv("MCPGATEWAY_ENDPOINT"),
-        "catalogue_url": os.getenv("PEN_CATALOGUE_URL")
-    }
+# Expose the port
+EXPOSE 8080
 
-@app.get("/health")
-def health():
-    return {"status": "healthy"}
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:8080/health || exit 1
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
-EOL
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
 
-# Create agents directory
-RUN mkdir -p agents
-
-COPY <<EOL ./agents/pen_agent.py
-class PenAgent:
-    def __init__(self):
-        self.name = "Pen Sales Agent"
-    
-    def search_pens(self, query):
-        return f"Searching for pens: {query}"
-EOL
-
-EXPOSE 8000
-CMD ["python", "main.py"]
+# Run the application
+CMD ["python", "app.py"]

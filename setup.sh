@@ -1,3 +1,9 @@
+#!/bin/bash
+
+echo "🖋️ Setting up Premium Pen Emporium Demo..."
+
+# Create compose.yaml
+cat > compose.yaml << 'EOF'
 services:
   # ADK Pen Shop Agent
   adk:
@@ -67,3 +73,75 @@ volumes:
 secrets:
   brave-api-key:
     file: ./secrets/brave-api-key.txt
+EOF
+
+# Create other files...
+echo "✅ Created compose.yaml"
+
+# Create Dockerfile
+cat > Dockerfile << 'EOF'
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements and install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY . .
+
+# Expose the port
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:8080/health || exit 1
+
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+
+# Run the application
+CMD ["python", "app.py"]
+EOF
+
+echo "✅ Created Dockerfile"
+
+# Create requirements.txt
+cat > requirements.txt << 'EOF'
+flask==3.0.0
+flask-cors==4.0.0
+google-adk==0.8.0
+openai==1.50.0
+pymongo==4.6.1
+requests==2.31.0
+pydantic==2.5.0
+gunicorn==21.2.0
+python-dotenv==1.0.0
+mcp-client==0.7.0
+EOF
+
+echo "✅ Created requirements.txt"
+
+# Create secrets directory and dummy files
+mkdir -p secrets
+echo "dummy-brave-search-key" > secrets/brave-api-key.txt
+echo "sk-dummy-openai-key" > secrets/openai-api-key.txt
+
+echo "✅ Created secrets directory"
+
+echo ""
+echo "🎯 Setup complete! Now run:"
+echo "   git add ."
+echo "   git commit -m 'Add pen shop demo files'"
+echo "   git push origin main"
+echo ""
+echo "To test locally:"
+echo "   make setup"
+echo "   make demo-local"
