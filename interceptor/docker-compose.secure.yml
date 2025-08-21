@@ -1,0 +1,211 @@
+# 🛡️ SECURE CONFIGURATION - WITH DOCKER MCP GATEWAY INTERCEPTORS
+# This configuration demonstrates how interceptors prevent security attacks
+# PRODUCTION-READY SECURITY PATTERNS
+
+services:
+  # Docker MCP Gateway - The Security Layer
+  mcp-gateway:
+    image: docker/mcp-gateway:latest
+    hostname: mcp-gateway
+    ports:
+      - 8080:8080
+    environment:
+      - GATEWAY_PORT=8080
+      - GATEWAY_TRANSPORT=http
+      - ENABLE_INTERCEPTORS=true
+      - LOG_LEVEL=debug
+    volumes:
+      - ./interceptors:/interceptors:ro
+      - ./security-policies:/policies:ro
+      - gateway-logs:/var/log/gateway
+    command: >
+      gateway run
+      --port=8080
+      --transport=http
+      --verify-signatures
+      --block-secrets
+      --log-calls
+      --interceptor=/interceptors/prompt-injection-blocker.sh
+      --interceptor=/interceptors/sql-injection-blocker.sh
+      --interceptor=/interceptors/tool-signature-verifier.sh
+      --interceptor=/interceptors/cross-repo-blocker.sh
+      --interceptor=/interceptors/data-exfiltration-blocker.sh
+      --servers=pen-inventory,pen-customer-service
+      --policy-file=/policies/security-policy.json
+    depends_on:
+      - secure-pen-server
+      - security-dashboard
+    restart: always
+    networks:
+      - secure-network
+
+  # Secure Pen Shop Frontend - With Input Validation
+  secure-pen-frontend:
+    build:
+      context: ./secure/frontend
+      dockerfile: Dockerfile
+    hostname: secure-pen-frontend
+    ports:
+      - 9092:80
+    restart: always
+    environment:
+      - CATALOGUE_SERVICE_HOST=secure-pen-server
+      - CATALOGUE_SERVICE_PORT=8081
+      - API_BASE_URL=http://mcp-gateway:8080
+      # SECURITY: API key managed by Docker secrets
+      - ENABLE_INPUT_VALIDATION=true
+      - ENABLE_OUTPUT_FILTERING=true
+      - SECURITY_MODE=strict
+    depends_on:
+      - mcp-gateway
+      - secure-pen-server
+    networks:
+      - secure-network
+    secrets:
+      - openai-api-key
+
+  # Secure MCP Server - Behind Gateway Protection
+  secure-pen-server:
+    build:
+      context: ./secure/mcp-server
+      dockerfile: Dockerfile
+    hostname: secure-pen-server
+    ports:
+      - 8081:8081
+    restart: always
+    environment:
+      # SECURITY: Authentication required
+      - REQUIRE_AUTH=true
+      - ENABLE_SIGNATURE_VERIFICATION=true
+      - DISABLE_SYSTEM_COMMANDS=true
+      - MYSQL_HOST=secure-catalogue-db
+      - MYSQL_PASSWORD=${MYSQL_ROOT_PASSWORD:-securepassword}
+      - MONGODB_URI=mongodb://admin:securepassword@secure-mongodb:27017/penstore
+      # SECURITY: Secure admin token via secrets
+      - SECURITY_MODE=production
+      - DEBUG_MODE=false
+    depends_on:
+      - secure-catalogue-db
+      - secure-mongodb
+    networks:
+      - secure-network
+    secrets:
+      - mcp-admin-token
+    # SECURITY: No privileged access, no docker socket mounting
+    user: "1001:1001"
+
+  # Secure Database with Network Isolation
+  secure-catalogue-db:
+    image: mysql:8.0
+    hostname: secure-catalogue-db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-securepassword}
+      - MYSQL_DATABASE=pendb
+      - MYSQL_USER=penuser
+      - MYSQL_PASSWORD=penpass
+    volumes:
+      - ./data/mysql-init:/docker-entrypoint-initdb.d:ro
+      - secure_mysql_data:/var/lib/mysql
+    # SECURITY: Database not exposed externally
+    expose:
+      - "3306"
+    networks:
+      - secure-network
+    # SECURITY: Run as non-root user
+    user: "999:999"
+
+  # Secure MongoDB with Authentication
+  secure-mongodb:
+    image: mongo:latest
+    hostname: secure-mongodb
+    expose:
+      - "27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=securepassword
+      - MONGO_INITDB_DATABASE=penstore
+    volumes:
+      - ./data/mongodb-init:/docker-entrypoint-initdb.d:ro
+      - secure_mongodb_data:/data/db
+    networks:
+      - secure-network
+    # SECURITY: No admin interface exposure
+    command: [mongod, --quiet, --auth]
+
+  # Security Dashboard - Shows Blocked Attacks
+  security-dashboard:
+    build:
+      context: ./secure/dashboard
+      dockerfile: Dockerfile
+    ports:
+      - 3002:3000
+    environment:
+      - REACT_APP_MCP_GATEWAY=http://mcp-gateway:8080
+      - REACT_APP_SECURITY_MODE=enabled
+      - REACT_APP_SHOW_BLOCKED_ATTACKS=true
+      - REACT_APP_GATEWAY_LOGS=http://mcp-gateway:8080/logs
+    depends_on:
+      - mcp-gateway
+    networks:
+      - secure-network
+
+  # Attack Simulator (Same as vulnerable, but attacks get blocked)
+  attack-simulator:
+    build:
+      context: ./attack-simulator
+      dockerfile: Dockerfile
+    hostname: attack-simulator
+    ports:
+      - 8083:8082
+    environment:
+      - TARGET_MCP_GATEWAY=http://mcp-gateway:8080
+      - SIMULATE_ATTACKS=true
+      - ATTACK_INTERVAL=45s
+    depends_on:
+      - mcp-gateway
+    restart: always
+    networks:
+      - secure-network
+
+  # Interceptor Monitor - Shows Real-time Interceptor Activity
+  interceptor-monitor:
+    build:
+      context: ./interceptor-monitor
+      dockerfile: Dockerfile
+    ports:
+      - 3003:3000
+    environment:
+      - GATEWAY_LOGS_PATH=/gateway-logs
+      - INTERCEPTOR_CONFIG_PATH=/interceptors
+      - REAL_TIME_MONITORING=true
+    volumes:
+      - gateway-logs:/gateway-logs:ro
+      - ./interceptors:/interceptors:ro
+    depends_on:
+      - mcp-gateway
+    networks:
+      - secure-network
+
+volumes:
+  secure_mysql_data:
+  secure_mongodb_data:
+  gateway-logs:
+
+# SECURITY: Network isolation and segmentation
+networks:
+  secure-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/16
+    driver_opts:
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+
+# SECURITY: Secrets management with Docker secrets
+secrets:
+  openai-api-key:
+    file: ./secrets/openai-api-key.txt
+  mcp-admin-token:
+    file: ./secrets/mcp-admin-token.txt
