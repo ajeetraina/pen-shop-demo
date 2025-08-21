@@ -1,0 +1,25 @@
+{
+  "name": "vulnerable-pen-shop-mcp",
+  "version": "1.0.0",
+  "description": "⚠️ Vulnerable MCP Server for Pen Shop Demo - Security Testing Only ⚠️",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0",
+    "mysql2": "^3.11.4"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "vulnerable",
+    "demo",
+    "security",
+    "pen-shop"
+  ],
+  "author": "Ajeet Singh Raina",
+  "license": "MIT"
+}
