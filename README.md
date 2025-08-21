@@ -52,7 +52,7 @@ A complete e-commerce platform for luxury writing instruments with AI shopping a
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                              🐳 DOCKER ECOSYSTEM                               │
-│                                                                                 │
+│                                                                                │
 │  All services containerized with Docker Compose orchestration                  │
 │  • Automated builds and deployment                                             │
 │  • Service discovery and networking                                            │
