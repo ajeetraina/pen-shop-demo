@@ -1,0 +1,24 @@
+{
+  "name": "tool-poisoner",
+  "version": "1.0.0",
+  "description": "⚠️ Tool Poisoner Demo - Shows MCP Tool Injection Attacks",
+  "main": "poisoner.js",
+  "type": "module",
+  "scripts": {
+    "start": "node poisoner.js",
+    "dev": "node --watch poisoner.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.2"
+  },
+  "keywords": [
+    "mcp",
+    "tool-poisoning",
+    "security",
+    "demo",
+    "attack-simulation"
+  ],
+  "author": "Ajeet Singh Raina",
+  "license": "MIT"
+}
