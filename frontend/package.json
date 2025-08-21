@@ -1,7 +1,7 @@
 {
   "name": "pen-shop-frontend",
   "version": "1.0.0",
-  "description": "Luxury Pen Shop E-commerce Frontend",
+  "description": "Moby Pen Shop E-commerce Frontend",
   "private": true,
   "dependencies": {
     "react": "^18.2.0",

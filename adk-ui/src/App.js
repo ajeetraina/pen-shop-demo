@@ -145,7 +145,7 @@ function App() {
   return (
     <AppContainer>
       <Header>
-        <h1>🖊️ Pen Shop AI Assistant</h1>
+        <h1>🖊️ Moby Pen Shop AI Assistant</h1>
         <p>Expert advice for luxury writing instruments</p>
       </Header>
       <ChatContainer>

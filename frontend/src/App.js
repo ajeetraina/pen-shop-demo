@@ -159,7 +159,7 @@ function App() {
     return (
       <AppContainer>
         <Header>
-          <Title>🖊️ Luxury Pen Shop</Title>
+          <Title>🖊️ Moby Pen Shop</Title>
           <Subtitle>Premium Writing Instruments</Subtitle>
         </Header>
         <Container>
@@ -172,7 +172,7 @@ function App() {
   return (
     <AppContainer>
       <Header>
-        <Title>🖊️ Luxury Pen Shop</Title>
+        <Title>🖊️ Moby Pen Shop</Title>
         <Subtitle>Premium Writing Instruments</Subtitle>
       </Header>
       <Container>

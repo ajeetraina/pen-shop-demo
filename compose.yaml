@@ -77,7 +77,7 @@ services:
       - 3000:3000
     environment:
       - REACT_APP_API_BASE_URL=http://localhost:8000
-      - REACT_APP_STORE_NAME=Luxury Pen Shop
+      - REACT_APP_STORE_NAME=Moby Pen Shop
       - REACT_APP_CATALOGUE_URL=http://localhost:8081
     depends_on:
       - adk-backend
