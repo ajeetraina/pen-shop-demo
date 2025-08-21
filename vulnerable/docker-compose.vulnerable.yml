@@ -1,0 +1,169 @@
+# ⚠️  VULNERABLE CONFIGURATION - FOR DEMONSTRATION ONLY ⚠️
+# This configuration contains intentional security vulnerabilities
+# DO NOT USE IN PRODUCTION
+
+services:
+  # Vulnerable Pen Shop Frontend - Direct LLM Integration
+  pen-frontend-vulnerable:
+    build:
+      context: ./vulnerable/frontend
+      dockerfile: Dockerfile
+    hostname: pen-frontend-vulnerable
+    ports:
+      - 9091:80
+    restart: always
+    environment:
+      - CATALOGUE_SERVICE_HOST=pen-catalogue
+      - CATALOGUE_SERVICE_PORT=8081
+      - API_BASE_URL=http://pen-catalogue:8081
+      # VULNERABILITY: Direct OpenAI API key exposure
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ENABLE_DIRECT_LLM=true
+      - DISABLE_INPUT_SANITIZATION=true
+    depends_on:
+      - pen-catalogue
+      - vulnerable-mcp-server
+
+  # Vulnerable MCP Server - No Access Controls
+  vulnerable-mcp-server:
+    build:
+      context: ./vulnerable/mcp-server
+      dockerfile: Dockerfile
+    hostname: vulnerable-mcp-server
+    ports:
+      - 8080:8080
+    restart: always
+    environment:
+      # VULNERABILITY: All tools exposed without restrictions
+      - ENABLE_ALL_TOOLS=true
+      - DISABLE_AUTH=true
+      - ALLOW_SYSTEM_COMMANDS=true
+      - MYSQL_HOST=catalogue-db
+      - MYSQL_PASSWORD=${MYSQL_ROOT_PASSWORD:-password}
+      - MONGODB_URI=mongodb://admin:password@mongodb:27017/penstore
+      # VULNERABILITY: Admin credentials exposed
+      - ADMIN_TOKEN=admin123
+      - DEBUG_MODE=true
+    depends_on:
+      - catalogue-db
+      - mongodb
+    volumes:
+      # VULNERABILITY: Host filesystem access
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./vulnerable/malicious-tools:/malicious-tools:ro
+
+  # Pen Catalogue Service (Same as original but with debug endpoints)
+  pen-catalogue:
+    build:
+      context: ./catalogue-service
+      dockerfile: Dockerfile
+    hostname: pen-catalogue
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      - MYSQL_HOST=catalogue-db
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=pendb
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=${MYSQL_ROOT_PASSWORD:-password}
+      # VULNERABILITY: Debug mode exposes internal data
+      - DEBUG_ENDPOINTS=true
+      - EXPOSE_ADMIN_API=true
+    depends_on:
+      - catalogue-db
+
+  # MySQL Database (Same as original)
+  catalogue-db:
+    image: mysql:8.0
+    hostname: catalogue-db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-password}
+      - MYSQL_DATABASE=pendb
+      - MYSQL_USER=penuser
+      - MYSQL_PASSWORD=penpass
+    volumes:
+      - ./data/mysql-init:/docker-entrypoint-initdb.d:ro
+      - mysql_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+  # MongoDB (Same as original but with exposed admin interface)
+  mongodb:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+      - 8088:8088  # VULNERABILITY: Exposed admin interface
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=penstore
+    volumes:
+      - ./data/mongodb-init:/docker-entrypoint-initdb.d:ro
+      - mongodb_data:/data/db
+      - ./vulnerable/mongo-admin:/opt/mongo-admin:ro
+    command: [mongod, --quiet, --rest, --httpinterface]
+
+  # Vulnerable Agent Backend - No Input Validation
+  vulnerable-agent:
+    build:
+      context: ./vulnerable/agent
+      dockerfile: Dockerfile
+    ports:
+      - 8001:8000
+    environment:
+      - MCP_SERVER_URL=http://vulnerable-mcp-server:8080
+      - CATALOGUE_URL=http://pen-catalogue:8081
+      - MONGODB_URI=mongodb://admin:password@mongodb:27017/penstore
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      # VULNERABILITY: No input validation or filtering
+      - DISABLE_INPUT_FILTERING=true
+      - ALLOW_SYSTEM_PROMPTS=true
+      - ENABLE_TOOL_POISONING=true
+    depends_on:
+      - vulnerable-mcp-server
+      - pen-catalogue
+      - mongodb
+
+  # Malicious Tool Injector - Simulates tool poisoning
+  tool-poisoner:
+    build:
+      context: ./vulnerable/tool-poisoner
+      dockerfile: Dockerfile
+    hostname: tool-poisoner
+    ports:
+      - 8082:8082
+    environment:
+      - TARGET_MCP_SERVER=http://vulnerable-mcp-server:8080
+      - INJECT_MALICIOUS_TOOLS=true
+      - POISON_INTERVAL=30s
+    depends_on:
+      - vulnerable-mcp-server
+    restart: always
+
+  # Attack Dashboard - Shows real-time attacks
+  attack-dashboard:
+    build:
+      context: ./vulnerable/dashboard
+      dockerfile: Dockerfile
+    ports:
+      - 3001:3000
+    environment:
+      - REACT_APP_MCP_SERVER=http://vulnerable-mcp-server:8080
+      - REACT_APP_CATALOGUE_URL=http://pen-catalogue:8081
+      - REACT_APP_SHOW_ATTACKS=true
+    depends_on:
+      - vulnerable-mcp-server
+
+volumes:
+  mysql_data:
+  mongodb_data:
+
+# VULNERABILITY: No network isolation
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
