@@ -176,21 +176,6 @@ pen-shop-platform/
 
 
 
-## AI Assistant Capabilities
-
-The AI shopping assistant provides:
-
-### **Smart Recommendations**
-- Budget-based suggestions ($10-$1000+)
-- Writing style matching (formal, casual, artistic)
-- Hand size and grip preferences
-- Ink type preferences (fountain, gel, ballpoint)
-
-### **Expert Knowledge**
-- Detailed brand comparisons
-- Nib size explanations (EF, F, M, B)
-- Maintenance and care tips
-- Gift recommendations
 
 ### **Sample Conversations**
 ```
@@ -209,63 +194,4 @@ Show me luxury pens under $100
 
 ```
 
-## Development
-
-### Local Development
-
-Each service can be developed independently:
-
-```bash
-# Frontend development
-cd frontend && npm start          # Runs on http://localhost:3001
-
-# Catalogue service development  
-cd catalogue-service && npm run dev  # Runs on http://localhost:8081
-
-# AI UI development
-cd adk-ui && npm start           # Runs on http://localhost:3001
-```
-
-### Database Access
-
-```bash
-# MySQL (Product Catalog)
-mysql -h localhost -P 3306 -u root -p
-# Password: password
-# Database: pendb
-
-# MongoDB (Reviews & AI Data)
-mongosh mongodb://admin:password@localhost:27017/penstore
-```
-
-### API Testing
-
-```bash
-# Test catalogue API
-curl http://localhost:8081/catalogue
-
-# Test AI backend
-curl -X POST http://localhost:8000/api/chat \
-  -H "Content-Type: application/json" \
-  -d '{"message": "Show me fountain pens"}'
-
-# Health checks
-curl http://localhost:8081/health
-curl http://localhost:8000/api/health
-```
-
-## Configuration
-
-### Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MYSQL_ROOT_PASSWORD` | `password` | MySQL root password |
-| `OPENAI_API_KEY` | - | OpenAI API key (required) |
-| `CATALOGUE_URL` | `http://pen-catalogue:8081` | Catalogue service URL |
-| `MONGODB_URI` | `mongodb://admin:password@mongodb:27017/penstore` | MongoDB connection |
-
-### Docker Volumes
-
-- `mysql_data`: Persistent MySQL data storage
-- `mongodb_data`: Persistent MongoDB data storage
+ data storage
