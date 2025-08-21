@@ -6,7 +6,7 @@ services:
   # Vulnerable Pen Shop Frontend - Direct LLM Integration
   pen-frontend-vulnerable:
     build:
-      context: ./vulnerable/frontend
+      context: ./frontend
       dockerfile: Dockerfile
     hostname: pen-frontend-vulnerable
     ports:
@@ -27,7 +27,7 @@ services:
   # Vulnerable MCP Server - No Access Controls
   vulnerable-mcp-server:
     build:
-      context: ./vulnerable/mcp-server
+      context: ./mcp-server
       dockerfile: Dockerfile
     hostname: vulnerable-mcp-server
     ports:
@@ -50,12 +50,12 @@ services:
     volumes:
       # VULNERABILITY: Host filesystem access
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./vulnerable/malicious-tools:/malicious-tools:ro
+      - ./malicious-tools:/malicious-tools:ro
 
-  # Pen Catalogue Service (Same as original but with debug endpoints)
+  # Pen Catalogue Service (Use from parent directory)
   pen-catalogue:
     build:
-      context: ./catalogue-service
+      context: ../catalogue-service
       dockerfile: Dockerfile
     hostname: pen-catalogue
     restart: always
@@ -84,7 +84,7 @@ services:
       - MYSQL_USER=penuser
       - MYSQL_PASSWORD=penpass
     volumes:
-      - ./data/mysql-init:/docker-entrypoint-initdb.d:ro
+      - ../data/mysql-init:/docker-entrypoint-initdb.d:ro
       - mysql_data:/var/lib/mysql
     ports:
       - 3306:3306
@@ -100,15 +100,15 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=password
       - MONGO_INITDB_DATABASE=penstore
     volumes:
-      - ./data/mongodb-init:/docker-entrypoint-initdb.d:ro
+      - ../data/mongodb-init:/docker-entrypoint-initdb.d:ro
       - mongodb_data:/data/db
-      - ./vulnerable/mongo-admin:/opt/mongo-admin:ro
+      - ./mongo-admin:/opt/mongo-admin:ro
     command: [mongod, --quiet, --rest, --httpinterface]
 
   # Vulnerable Agent Backend - No Input Validation
   vulnerable-agent:
     build:
-      context: ./vulnerable/agent
+      context: ./agent
       dockerfile: Dockerfile
     ports:
       - 8001:8000
@@ -129,7 +129,7 @@ services:
   # Malicious Tool Injector - Simulates tool poisoning
   tool-poisoner:
     build:
-      context: ./vulnerable/tool-poisoner
+      context: ./tool-poisoner
       dockerfile: Dockerfile
     hostname: tool-poisoner
     ports:
@@ -145,7 +145,7 @@ services:
   # Attack Dashboard - Shows real-time attacks
   attack-dashboard:
     build:
-      context: ./vulnerable/dashboard
+      context: ./dashboard
       dockerfile: Dockerfile
     ports:
       - 3001:3000
