@@ -7,27 +7,25 @@ FROM node:18-alpine
 # VULNERABILITY: Running as root user
 USER root
 
-# VULNERABILITY: Installing unnecessary packages and exposing system tools
+# VULNERABILITY: Installing unnecessary packages (but keeping it fast for demo)
 RUN apk add --no-cache \
     curl \
     wget \
     netcat-openbsd \
-    nmap \
-    tcpdump \
-    strace \
-    vim \
     bash \
-    mysql-client \
-    postgresql-client
+    vim
 
 # VULNERABILITY: Setting working directory in root
 WORKDIR /app
 
 # VULNERABILITY: Copying all files without filtering
-COPY . .
+COPY package*.json ./
 
-# VULNERABILITY: Installing packages with npm ci --unsafe-perm
+# VULNERABILITY: Installing packages with npm install --unsafe-perm
 RUN npm install --unsafe-perm
+
+# Copy the rest of the application
+COPY . .
 
 # VULNERABILITY: Setting dangerous environment variables
 ENV NODE_ENV=development
