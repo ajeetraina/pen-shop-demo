@@ -63,19 +63,19 @@ A complete e-commerce platform for luxury writing instruments with AI shopping a
 
 ## 🎯 Key Features
 
-### 🏪 **E-commerce Store**
+###  **E-commerce Store**
 - **Product Catalog**: Browse luxury pens from Montblanc, Parker, Waterman, Cross, Pilot
 - **Advanced Search**: Filter by brand, type, price range
 - **Product Details**: Specifications, pricing, availability
 - **Responsive Design**: Modern React UI with styled-components
 
-### 🤖 **AI Shopping Assistant**
+###  **AI Shopping Assistant**
 - **Smart Recommendations**: Personalized pen suggestions based on needs
 - **Expert Knowledge**: Deep understanding of fountain pens, ballpoints, rollerballs
 - **Budget Guidance**: Recommendations across all price ranges ($12-$895)
 - **Writing Style Analysis**: Matches pens to user's writing preferences
 
-### 🛠️ **Technical Stack**
+###  **Technical Stack**
 - **Frontend**: React 18, Styled Components, Axios
 - **Backend**: Go (Gorilla Mux), Node.js (Express)
 - **Databases**: MySQL 8.0, MongoDB
@@ -130,7 +130,7 @@ pen-shop-platform/
         └── 📄 init-reviews.js       # Customer reviews data
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - **Docker & Docker Compose** installed
@@ -163,7 +163,7 @@ pen-shop-platform/
    - 📦 **Catalogue API**: http://localhost:8081/catalogue
    - 🧠 **Agent API**: http://localhost:8000/api/health
 
-## 📊 Service Details
+## Service Details
 
 | Service | Technology | Port | Purpose |
 |---------|------------|------|---------|
@@ -176,7 +176,7 @@ pen-shop-platform/
 
 
 
-## 🤖 AI Assistant Capabilities
+## AI Assistant Capabilities
 
 The AI shopping assistant provides:
 
@@ -209,7 +209,7 @@ Show me luxury pens under $100
 
 ```
 
-## 🛠️ Development
+## Development
 
 ### Local Development
 
@@ -254,7 +254,7 @@ curl http://localhost:8081/health
 curl http://localhost:8000/api/health
 ```
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -269,68 +269,4 @@ curl http://localhost:8000/api/health
 
 - `mysql_data`: Persistent MySQL data storage
 - `mongodb_data`: Persistent MongoDB data storage
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**Port Conflicts:**
-```bash
-# Check what's using the ports
-lsof -i :9090,3000,8081,8000,3306,27017
-
-# Stop conflicting services
-docker compose down
-```
-
-**Database Connection Issues:**
-```bash
-# Reset databases
-docker compose down -v  # Removes volumes
-docker compose up --build
-```
-
-**Build Failures:**
-```bash
-# Clean Docker cache
-docker system prune -a
-
-# Rebuild from scratch
-docker compose build --no-cache
-```
-
-**API Key Issues:**
-```bash
-# Verify API key is set correctly
-cat secret.openai-api-key
-
-# Test API key
-curl -H "Authorization: Bearer $(cat secret.openai-api-key)" \
-  https://api.openai.com/v1/models
-```
-
-## 📈 Performance & Scaling
-
-### Resource Requirements
-- **Minimum**: 4GB RAM, 2 CPU cores
-- **Recommended**: 8GB RAM, 4 CPU cores
-- **Storage**: ~2GB for images and data
-
-### Scaling Options
-- **Horizontal**: Multiple instances behind load balancer
-- **Database**: Read replicas for catalogue-db
-- **CDN**: Static assets served from CDN
-- **Caching**: Redis for API response caching
-
-## 🔒 Security Features
-
-- **API Key Protection**: Keys stored locally, never committed
-- **Input Validation**: All user inputs sanitized
-- **Database Security**: Parameterized queries prevent SQL injection
-- **CORS Configuration**: Proper cross-origin request handling
-- **Container Isolation**: Each service runs in isolated container
-
-
-
-
 
