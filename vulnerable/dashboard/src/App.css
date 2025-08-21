@@ -1,0 +1,380 @@
+.App {
+  text-align: center;
+  background: linear-gradient(135deg, #1e1e1e 0%, #2d1b1b 100%);
+  color: #ffffff;
+  min-height: 100vh;
+  font-family: 'Courier New', monospace;
+}
+
+.app-header {
+  background: #8B0000;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 2.5em;
+  color: #ffff00;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  animation: blink 2s infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.7; }
+}
+
+.status-bar {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.status-item {
+  background: #333;
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: 2px solid #666;
+  min-width: 120px;
+}
+
+.status-item.critical {
+  background: #8B0000;
+  border-color: #ff0000;
+  animation: pulse 1.5s infinite;
+}
+
+.status-item.high {
+  background: #FF4500;
+  border-color: #FF6347;
+}
+
+.status-item.danger {
+  background: #8B0000;
+  border-color: #ff0000;
+  color: #ffff00;
+  font-weight: bold;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 5px #ff0000; }
+  50% { box-shadow: 0 0 20px #ff0000, 0 0 30px #ff0000; }
+  100% { box-shadow: 0 0 5px #ff0000; }
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.attacks-section, .vulnerabilities-section {
+  background: #2a2a2a;
+  border-radius: 10px;
+  padding: 20px;
+  border: 2px solid #444;
+}
+
+.attacks-section h2, .vulnerabilities-section h2 {
+  color: #ff6b6b;
+  margin-top: 0;
+  font-size: 1.8em;
+  border-bottom: 2px solid #ff6b6b;
+  padding-bottom: 10px;
+}
+
+.attacks-list {
+  max-height: 600px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.attack-card {
+  background: #1a1a1a;
+  border-left: 5px solid #ff6b6b;
+  padding: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.attack-card:hover {
+  background: #333;
+  transform: translateX(5px);
+}
+
+.attack-card.critical {
+  border-left-color: #ff0000;
+  background: #2a0a0a;
+}
+
+.attack-card.high {
+  border-left-color: #ff4500;
+  background: #2a1a0a;
+}
+
+.attack-card.medium {
+  border-left-color: #ffa500;
+  background: #2a2a0a;
+}
+
+.attack-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.attack-type {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.severity {
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 0.8em;
+  font-weight: bold;
+}
+
+.severity.critical {
+  background: #ff0000;
+  color: white;
+}
+
+.severity.high {
+  background: #ff4500;
+  color: white;
+}
+
+.severity.medium {
+  background: #ffa500;
+  color: black;
+}
+
+.attack-time {
+  color: #aaa;
+  font-size: 0.9em;
+  margin-bottom: 8px;
+}
+
+.attack-details {
+  color: #ccc;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.attack-source {
+  color: #888;
+  font-size: 0.8em;
+  font-style: italic;
+}
+
+.vulnerability-panel {
+  background: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.vulnerability-panel h3 {
+  margin-top: 0;
+  color: #ff9999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.risk-badge {
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-size: 0.8em;
+  font-weight: bold;
+}
+
+.risk-badge.critical {
+  background: #ff0000;
+  color: white;
+}
+
+.risk-badge.high {
+  background: #ff4500;
+  color: white;
+}
+
+.vulnerability-panel ul {
+  list-style: none;
+  padding: 0;
+}
+
+.vulnerability-panel li {
+  background: #333;
+  padding: 8px;
+  margin: 5px 0;
+  border-left: 3px solid #ff6b6b;
+  border-radius: 3px;
+}
+
+.attack-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #2a2a2a;
+  border-radius: 10px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80%;
+  overflow-y: auto;
+  border: 2px solid #ff6b6b;
+}
+
+.modal-header {
+  background: #8B0000;
+  padding: 15px;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: white;
+}
+
+.modal-header button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+}
+
+.modal-body {
+  padding: 20px;
+  text-align: left;
+}
+
+.modal-body pre {
+  background: #1a1a1a;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-x: auto;
+  border-left: 3px solid #ff6b6b;
+}
+
+.demo-controls {
+  background: #2a2a2a;
+  margin: 20px;
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px solid #444;
+}
+
+.demo-controls h3 {
+  color: #ffff00;
+  margin-top: 0;
+}
+
+.control-buttons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.demo-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  min-width: 150px;
+}
+
+.demo-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.prompt-injection {
+  background: #ff4500;
+  color: white;
+}
+
+.tool-poison {
+  background: #8B0000;
+  color: white;
+}
+
+.sql-injection {
+  background: #ff6347;
+  color: white;
+}
+
+.data-exfil {
+  background: #dc143c;
+  color: white;
+}
+
+.warning-footer {
+  background: #ff4500;
+  color: white;
+  padding: 15px;
+  margin-top: 20px;
+  border-top: 3px solid #ff0000;
+}
+
+.warning-footer p {
+  margin: 0;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ff6b6b;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff4444;
+}
