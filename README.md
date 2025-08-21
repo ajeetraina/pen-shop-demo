@@ -6,18 +6,18 @@ A complete e-commerce platform for luxury writing instruments with AI shopping a
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                           🖊️ MOBY PEN SHOP PLATFORM                          │
+│                           🖊️ MOBY PEN SHOP PLATFORM                             │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────────────────────┐
-│   👤 Customer    │    │  🤖 AI Assistant │    │        🌐 External APIs        │
-│   Browser        │    │    User          │    │                                 │
-└─────────┬───────┘    └─────────┬───────┘    │  ┌─────────────────────────────┐ │
-          │                      │             │  │       OpenAI GPT-4          │ │
-          │                      │             │  │   (AI Responses)           │ │
-          ▼                      ▼             │  └─────────────────────────────┘ │
-┌─────────────────┐    ┌─────────────────┐    └─────────────────────────────────┘
-│  🏪 Frontend     │    │  💬 AI UI        │                   ▲
+┌─────────────────┐      ┌────────────────┐      ┌─────────────────────────────────┐
+│   👤 Customer   │      │ 🤖 AI Assistant│    │        🌐 External APIs         │
+│   Browser       │      │   User         │    │                                 │
+└─────────┬───────┘      └────────┬───────┘      │  ┌─────────────────────────────┐│
+          │                      │              │  │       OpenAI GPT-4          ││
+          │                      │              │  │   (AI Responses)            ││
+          ▼                      ▼              │  └─────────────────────────────┘│
+┌─────────────────┐    ┌─────────────────┐      └─────────────────────────────────┘
+│  🏪 Frontend    │    │  💬 AI UI       │                   ▲
 │  (React)        │    │  (React)        │                   │
 │  Port: 9090     │    │  Port: 3000     │                   │
 │                 │    │                 │                   │
@@ -41,7 +41,7 @@ A complete e-commerce platform for luxury writing instruments with AI shopping a
           │ SQL Queries          │ NoSQL Queries
           ▼                      ▼
 ┌─────────────────┐    ┌─────────────────┐
-│ 🗄️ MySQL DB     │    │ 🍃 MongoDB       │
+│ 🗄️ MySQL DB     │    │ 🍃 MongoDB      │
 │ Port: 3306      │    │ Port: 27017     │
 │                 │    │                 │
 │ • Pen Catalog   │    │ • Reviews       │
