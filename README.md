@@ -1,4 +1,4 @@
-# 🖊️ Luxury Pen Shop Platform
+# 🖊️ Moby Pen Shop Platform
 
 A complete e-commerce platform for luxury writing instruments with AI shopping assistant, built with Docker, React, Go, and Node.js.
 
@@ -6,7 +6,7 @@ A complete e-commerce platform for luxury writing instruments with AI shopping a
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                           🖊️ LUXURY PEN SHOP PLATFORM                          │
+│                           🖊️ MOBY PEN SHOP PLATFORM                          │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────────────────────┐
@@ -269,4 +269,3 @@ curl http://localhost:8000/api/health
 
 - `mysql_data`: Persistent MySQL data storage
 - `mongodb_data`: Persistent MongoDB data storage
-
