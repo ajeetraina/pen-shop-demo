@@ -9,10 +9,10 @@ A complete e-commerce platform for luxury writing instruments with AI shopping a
 │                           🖊️ MOBY PEN SHOP PLATFORM                             │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
-┌─────────────────┐      ┌────────────────┐      ┌─────────────────────────────────┐
+┌─────────────────┐      ┌────────────────┐    ┌─────────────────────────────────┐
 │   👤 Customer   │      │ 🤖 AI Assistant│    │        🌐 External APIs         │
 │   Browser       │      │   User         │    │                                 │
-└─────────┬───────┘      └────────┬───────┘      │  ┌─────────────────────────────┐│
+└─────────┬───────┘      └────────┬───────┘    │  ┌─────────────────────────────┐│
           │                      │              │  │       OpenAI GPT-4          ││
           │                      │              │  │   (AI Responses)            ││
           ▼                      ▼              │  └─────────────────────────────┘│
@@ -29,7 +29,7 @@ A complete e-commerce platform for luxury writing instruments with AI shopping a
           │ HTTP/REST            │ HTTP/REST                 │
           ▼                      ▼                           │
 ┌─────────────────┐    ┌─────────────────┐                   │
-│ 📦 Catalogue     │    │ 🧠 ADK Backend   │                   │
+│ 📦 Catalogue     │    │ 🧠 ADK Backend   │                 │
 │ Service (Node.js)│    │ (Go)            │───────────────────┘
 │ Port: 8081      │    │ Port: 8000      │ OpenAI API
 │                 │    │                 │
