@@ -24,6 +24,13 @@ A complete e-commerce platform for luxury writing instruments with AI shopping a
    echo "your-actual-openai-api-key" > secret.openai-api-key
    ```
 
+3. **Add your Brave Search key :**
+   ```
+   bash
+   export BRAVE_API_KEY=XXXX
+   ```
+
+
 3. **Start the platform:**
    ```bash
    docker compose up -d --build
