@@ -1,4 +1,4 @@
-# 🖊️ Luxury Pen Shop Platform
+# 🖊️ Moby Pen Shop Platform
 
 A complete e-commerce platform for luxury writing instruments with AI shopping assistant, built with Docker, React, Go, and Node.js.
 
