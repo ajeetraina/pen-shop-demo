@@ -1,9 +1,10 @@
+version: '3.8'
 
 services:
   # Custom Pen Store Frontend
   pen-frontend:
     build:
-      context: ./frontend
+      context: ../frontend          # Go up one directory
       dockerfile: Dockerfile
     hostname: pen-frontend
     ports:
@@ -19,7 +20,7 @@ services:
   # Custom Pen Catalogue Service
   pen-catalogue:
     build:
-      context: ./catalogue-service
+      context: ../catalogue-service  # Go up one directory
       dockerfile: Dockerfile
     hostname: pen-catalogue
     restart: always
@@ -45,7 +46,7 @@ services:
       - MYSQL_USER=penuser
       - MYSQL_PASSWORD=penpass
     volumes:
-      - ./data/mysql-init:/docker-entrypoint-initdb.d:ro
+      - ../data/mysql-init:/docker-entrypoint-initdb.d:ro  # Go up one directory
       - mysql_data:/var/lib/mysql
     ports:
       - 3306:3306
@@ -60,7 +61,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=password
       - MONGO_INITDB_DATABASE=penstore
     volumes:
-      - ./data/mongodb-init:/docker-entrypoint-initdb.d:ro
+      - ../data/mongodb-init:/docker-entrypoint-initdb.d:ro  # Go up one directory
       - mongodb_data:/data/db
     command: [mongod, --quiet, --logpath, /var/log/mongodb/mongod.log, --logappend]
     healthcheck:
@@ -72,7 +73,7 @@ services:
   # Agent UI (React App)
   adk-ui:
     build:
-      context: ./adk-ui
+      context: ../adk-ui            # Go up one directory
       dockerfile: Dockerfile
     ports:
       - 3000:3000
@@ -87,7 +88,7 @@ services:
   # Agent Backend (Go with ADK)
   adk-backend:
     build:
-      context: ./adk-backend
+      context: ../adk-backend       # Go up one directory
       dockerfile: Dockerfile
     ports:
       - 8000:8000
@@ -132,9 +133,9 @@ services:
       - --interceptor
       - "after:exec:/app/interceptors/response-sanitizer.sh"
       - --interceptor
-      - "before:tool_call:/app/interceptors/tool-access-guard.sh"
+      - "before:exec:/app/interceptors/tool-access-guard.sh"
       - --interceptor
-      - "after:tool_call:/app/interceptors/output-filter.sh"
+      - "after:exec:/app/interceptors/output-filter.sh"
     configs:
       - mcp_config
     volumes:
@@ -238,4 +239,4 @@ configs:
 
 secrets:
   openai-api-key:
-    file: secret.openai-api-key
+    file: ../secret.openai-api-key  # Go up one directory
