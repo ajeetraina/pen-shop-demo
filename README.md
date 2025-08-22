@@ -67,6 +67,4 @@ Show me luxury pens under $100
 ```
 
 
-```
 
- data storage
