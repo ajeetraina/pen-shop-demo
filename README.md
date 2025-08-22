@@ -163,6 +163,28 @@ pen-shop-platform/
    - 📦 **Catalogue API**: http://localhost:8081/catalogue
    - 🧠 **Agent API**: http://localhost:8000/api/health
 
+### Using gcloud
+
+1. Install gCloud 
+
+```
+# Uninstall Homebrew version
+brew uninstall google-cloud-sdk
+
+# Install official version
+curl https://sdk.cloud.google.com | bash
+
+# Restart your terminal, then:
+~/google-cloud-sdk/install.sh
+
+# Restart terminal again and verify
+which gcloud  # Should now show ~/google-cloud-sdk/bin/gcloud
+
+# Install run-compose
+gcloud components install run-compose
+```
+
+
 ## Service Details
 
 | Service | Technology | Port | Purpose |
