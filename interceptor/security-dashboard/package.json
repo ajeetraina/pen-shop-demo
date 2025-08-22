@@ -1,0 +1,14 @@
+{
+  "name": "pen-shop-security-dashboard",
+  "version": "1.0.0",
+  "description": "Security monitoring dashboard for Pen Shop Demo",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.0",
+    "ws": "^8.13.0",
+    "redis": "^4.6.0"
+  }
+}
