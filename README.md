@@ -1,7 +1,5 @@
 # 🖊️ Moby Pen Shop Platform
 
-<img width="736" height="566" alt="image" src="https://github.com/user-attachments/assets/bf7fd551-480a-448a-bd58-72a295375912" />
-
 
 🖊️ Multi-Agent Pen Shop - MCP Security Demo Platform
 
