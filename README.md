@@ -1,6 +1,14 @@
-# 🖊️ Multi-Agent Moby Pen Shop - MCP Security Demo Platform
 
+# 🖊️ Multi-Agent Pen Shop - MCP Security Demo Platform
+*AI Shopping Assistant with Docker MCP Gateway & Security Interceptors*
 
+A complete multi-agent e-commerce platform showcasing **secure AI interactions** through:
+- 🤖 **Multi-Agent Architecture** - Collaborative AI agents for shopping assistance
+- 🛡️ **MCP Security Gateway** - Docker-based interceptors protecting 25+ tools
+- 🔍 **Sequential Research Agents** - Intelligent pen recommendation system
+- ⚡ **Real-time Attack Simulation** - Built-in security testing framework
+
+Built with Docker, React, Go, Node.js, and powered by OpenAI + Qwen3 models.
 
 
 ```mermaid
