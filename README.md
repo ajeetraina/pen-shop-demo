@@ -1,7 +1,7 @@
-# 🖊️ Moby Pen Shop Platform
+# 🖊️ Multi-Agent Moby Pen Shop - MCP Security Demo Platform
 
 
-🖊️ Multi-Agent Pen Shop - MCP Security Demo Platform
+
 
 ```mermaid
 
