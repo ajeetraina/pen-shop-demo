@@ -1,5 +1,8 @@
 # 🖊️ Moby Pen Shop Platform
 
+<img width="736" height="566" alt="image" src="https://github.com/user-attachments/assets/bf7fd551-480a-448a-bd58-72a295375912" />
+
+
 A complete e-commerce platform for luxury writing instruments with AI shopping assistant, built with Docker, React, Go, and Node.js.
 
 
