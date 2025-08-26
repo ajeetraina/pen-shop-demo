@@ -133,6 +133,17 @@ flowchart TD
    ```
    bash
    export BRAVE_API_KEY=XXXX
+   export RESEND_API_KEY=XXX
+   ```
+
+   OR
+
+   Add the keys under `.mcp.env` file as:
+
+   ```
+   # MCP Server configuration
+   BRAVE_API_KEY=XX
+   RESEND_API_KEY=re_XXXX
    ```
 
 
