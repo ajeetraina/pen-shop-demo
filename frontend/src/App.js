@@ -56,11 +56,11 @@ const MobyPenStore = () => {
       } catch (err) {
         console.error('Catalogue error:', err);
         
-        // Fallback to mock data with working pen images
+        // Fallback to mock data with working pen images - fixed character encoding
         const mockProducts = [
           {
             id: 1,
-            name: "Mont Blanc Meisterstück",
+            name: "Mont Blanc Meisterstück", // Fixed character encoding
             brand: "Mont Blanc",
             type: "Fountain Pen",
             price: 649.99,
@@ -190,13 +190,10 @@ const MobyPenStore = () => {
 
   const categories = ['all', 'luxury', 'everyday', 'professional'];
 
+  // Fixed: Open chatbot in SAME window, not new window/tab
   const openAIAssistant = () => {
-    const chatWindow = window.open('http://localhost:3000', '_blank', 'noopener,noreferrer');
-    if (chatWindow) {
-      chatWindow.focus();
-    } else {
-      window.open('http://localhost:3000', '_self');
-    }
+    // Navigate to chatbot in the same window
+    window.location.href = 'http://localhost:3000';
   };
 
   const clearSearch = () => {
@@ -1007,8 +1004,8 @@ const MobyPenStore = () => {
         </div>
       </footer>
 
-      {/* Floating AI Assistant */}
-      <button onClick={openAIAssistant} className="floating-btn">
+      {/* Floating AI Assistant - Fixed to open in SAME window */}
+      <button onClick={openAIAssistant} className="floating-btn" title="Open Pen Expert Chat">
         💬
         <div style={{
           position: 'absolute',
@@ -1024,7 +1021,7 @@ const MobyPenStore = () => {
           whiteSpace: 'nowrap',
           pointerEvents: 'none'
         }}>
-          Pen Expert Chat
+          Chat opens in same window
         </div>
       </button>
     </div>
