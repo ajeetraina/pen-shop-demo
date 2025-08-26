@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Moon, Sun, ShoppingCart, Star, Heart, Search, Menu, X } from 'lucide-react';
 
-// Improved Docker Whale Logo Component
-const DockerLogo = ({ className = "w-8 h-8" }) => (
-  <svg className={className} viewBox="0 0 48 48" fill="currentColor">
-    {/* Docker whale body */}
-    <path d="M8 20h6v4H8v-4zm8 0h6v4h-6v-4zm8 0h6v4h-6v-4zm-8-6h6v4h-6v-4zm8-6h6v4h-6v-4zm0 6h6v4h-6v-4zm8 0h6v4h-6v-4z" />
-    {/* Whale tail and containers */}
-    <path d="M40 18c-2 0-3.5 1-4 2.5-.5-.3-1-.5-1.5-.5H8c0 8 6 14 14 14h14c6 0 10-4 10-10 0-6-2.5-6-6-6z" />
-    {/* Docker whale spout */}
-    <circle cx="42" cy="16" r="1.5" />
-    <path d="M41 14c0-1 .5-2 1-2s1 1 1 2" strokeWidth="1" stroke="currentColor" fill="none" />
+// Simple Clean Whale Logo Component
+const WhaleLogoIcon = ({ className = "w-8 h-8" }) => (
+  <svg className={className} viewBox="0 0 32 32" fill="currentColor">
+    {/* Whale body */}
+    <path d="M6 16c0-4 3-8 8-8s10 2 12 6c1 2 1 4 0 6-2 4-8 6-12 6s-8-4-8-10z" />
+    {/* Whale tail */}
+    <path d="M26 14c2-2 4-2 6 0-1 2-2 4-6 2z" />
+    <path d="M26 20c2 2 4 2 6 0-1-2-2-4-6-2z" />
+    {/* Whale eye */}
+    <circle cx="12" cy="14" r="2" fill="white" />
+    <circle cx="13" cy="13.5" r="1" fill="currentColor" />
+    {/* Water spout */}
+    <path d="M10 8c0-2 1-4 2-4s2 2 2 4" stroke="currentColor" strokeWidth="1" fill="none" />
+    <circle cx="11" cy="6" r="0.5" />
+    <circle cx="13" cy="6" r="0.5" />
   </svg>
 );
 
@@ -165,7 +170,7 @@ const MobyPenStore = () => {
       <div className="loading">
         <div className="spinner"></div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <DockerLogo style={{ width: '32px', height: '32px', color: '#2563eb' }} />
+          <WhaleLogoIcon style={{ width: '32px', height: '32px', color: '#2563eb' }} />
           <p style={{ fontSize: '20px', fontWeight: '500', color: '#1e293b' }}>Loading Moby's pen collection...</p>
         </div>
       </div>
@@ -180,7 +185,7 @@ const MobyPenStore = () => {
           {/* Logo */}
           <div className="logo">
             <div className="logo-icon">
-              <DockerLogo style={{ width: '24px', height: '24px' }} />
+              <WhaleLogoIcon style={{ width: '24px', height: '24px' }} />
             </div>
             <div className="logo-text">
               <h1>Moby Pen Store</h1>
@@ -344,7 +349,7 @@ const MobyPenStore = () => {
               justifyContent: 'center',
               gap: '8px'
             }}>
-              <DockerLogo style={{ width: '16px', height: '16px', color: '#2563eb' }} />
+              <WhaleLogoIcon style={{ width: '16px', height: '16px', color: '#2563eb' }} />
               <span>Demo Mode: Showcasing our curated pen collection</span>
             </div>
           )}
@@ -461,7 +466,7 @@ const MobyPenStore = () => {
           <div style={{ gridColumn: 'span 2' }}>
             <div className="logo" style={{ marginBottom: '16px' }}>
               <div className="logo-icon" style={{ width: '32px', height: '32px' }}>
-                <DockerLogo style={{ width: '20px', height: '20px' }} />
+                <WhaleLogoIcon style={{ width: '20px', height: '20px' }} />
               </div>
               <div className="logo-text">
                 <h3 style={{ fontSize: '18px', margin: '0' }}>Moby Pen Store</h3>
