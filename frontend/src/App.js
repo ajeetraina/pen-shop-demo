@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Moon, Sun, ShoppingCart, Star, Heart, Search, Menu, X } from 'lucide-react';
 
-// Proper Docker Logo Component
+// Improved Docker Whale Logo Component
 const DockerLogo = ({ className = "w-8 h-8" }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.83.185.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m0 2.715h2.119a.185.185 0 00.185-.185v-1.888a.185.185 0 00-.185-.185h-2.119a.185.185 0 00-.185.185v1.888c0 .102.084.185.185.185m-2.98 0h2.12a.185.185 0 00.185-.185v-1.888a.185.185 0 00-.185-.185h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338 0-.676.033-.995.099-.1-3.537-2.101-4.381-2.906-4.381-.202 0-.407.033-.61.099-.486.17-.944.54-1.354 1.122-.728-.79-1.672-1.219-2.669-1.219-.674 0-1.317.244-1.842.68-.525-.435-1.146-.68-1.842-.68-.997 0-1.941.429-2.669 1.219-.41-.582-.868-.952-1.354-1.122-.203-.066-.408-.099-.61-.099-.805 0-2.806.844-2.906 4.381-.319-.066-.657-.099-.995-.099C1.139 9.38.532 9.839.467 9.89L0 10.297l.945.789c.4.33.809.442 1.238.442.486 0 .944-.17 1.354-.505.41.334.868.505 1.354.505.486 0 .944-.17 1.354-.505.41.334.868.505 1.354.505.486 0 .944-.17 1.354-.505.41.334.868.505 1.354.505.486 0 .944-.17 1.354-.505.41.334.868.505 1.354.505.486 0 .944-.17 1.354-.505.41.334.868.505 1.354.505.429 0 .838-.112 1.238-.442l.945-.789z"/>
+  <svg className={className} viewBox="0 0 48 48" fill="currentColor">
+    {/* Docker whale body */}
+    <path d="M8 20h6v4H8v-4zm8 0h6v4h-6v-4zm8 0h6v4h-6v-4zm-8-6h6v4h-6v-4zm8-6h6v4h-6v-4zm0 6h6v4h-6v-4zm8 0h6v4h-6v-4z" />
+    {/* Whale tail and containers */}
+    <path d="M40 18c-2 0-3.5 1-4 2.5-.5-.3-1-.5-1.5-.5H8c0 8 6 14 14 14h14c6 0 10-4 10-10 0-6-2.5-6-6-6z" />
+    {/* Docker whale spout */}
+    <circle cx="42" cy="16" r="1.5" />
+    <path d="M41 14c0-1 .5-2 1-2s1 1 1 2" strokeWidth="1" stroke="currentColor" fill="none" />
   </svg>
 );
 
@@ -17,6 +23,7 @@ const MobyPenStore = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [favorites, setFavorites] = useState(new Set());
   const [error, setError] = useState(null);
+  const [showDemoDataNotice, setShowDemoDataNotice] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -30,8 +37,9 @@ const MobyPenStore = () => {
         
         const data = await response.json();
         setProducts(data);
+        setError(null); // Clear any previous errors
+        setShowDemoDataNotice(false);
       } catch (err) {
-        setError('Unable to load pen catalogue. Please try again later.');
         console.error('Catalogue error:', err);
         
         // Fallback to mock data with real pen images
@@ -117,6 +125,8 @@ const MobyPenStore = () => {
           }
         ];
         setProducts(mockProducts);
+        setError(null); // Don't show error when we have fallback data
+        setShowDemoDataNotice(true); // Show a subtle notice instead
       } finally {
         setLoading(false);
       }
@@ -145,8 +155,9 @@ const MobyPenStore = () => {
 
   const categories = ['all', 'luxury', 'everyday', 'professional'];
 
+  // Fix: Open chatbot in same page instead of new tab
   const openAIAssistant = () => {
-    window.open('http://localhost:3000', '_blank');
+    window.location.href = 'http://localhost:3000';
   };
 
   if (loading) {
@@ -317,12 +328,31 @@ const MobyPenStore = () => {
       {/* Products Grid */}
       <section style={{ padding: '32px 0' }}>
         <div className="container">
-          {error && (
+          {/* Show subtle demo notice instead of error when fallback data is loaded */}
+          {showDemoDataNotice && (
+            <div style={{
+              background: 'rgba(59, 130, 246, 0.1)',
+              border: '1px solid rgba(59, 130, 246, 0.2)',
+              color: '#2563eb',
+              padding: '12px 16px',
+              borderRadius: '12px',
+              textAlign: 'center',
+              margin: '0 0 24px 0',
+              fontSize: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px'
+            }}>
+              <DockerLogo style={{ width: '16px', height: '16px', color: '#2563eb' }} />
+              <span>Demo Mode: Showcasing our curated pen collection</span>
+            </div>
+          )}
+          
+          {/* Only show error if we actually have an error AND no products */}
+          {error && products.length === 0 && (
             <div className="error-message">
               <p>{error}</p>
-              <p style={{ fontSize: '12px', marginTop: '4px' }}>
-                Showing demo products below
-              </p>
             </div>
           )}
           
