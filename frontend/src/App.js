@@ -145,147 +145,167 @@ const MobyPenStore = () => {
 
   const categories = ['all', 'luxury', 'everyday', 'professional'];
 
-  const theme = {
-    bg: darkMode ? 'from-gray-900 via-blue-900 to-slate-900' : 'from-slate-50 via-blue-50 to-cyan-50',
-    cardBg: darkMode ? 'bg-gray-800/50 backdrop-blur-lg border-gray-700' : 'bg-white/70 backdrop-blur-lg border-white/20',
-    text: darkMode ? 'text-gray-100' : 'text-gray-900',
-    textSecondary: darkMode ? 'text-gray-300' : 'text-gray-600',
-    accent: 'from-blue-600 to-cyan-600',
-    button: darkMode ? 'bg-blue-600 hover:bg-blue-500' : 'bg-blue-600 hover:bg-blue-500',
-    dockerBlue: '#2496ED'
-  };
-
   const openAIAssistant = () => {
     window.open('http://localhost:3000', '_blank');
   };
 
   if (loading) {
     return (
-      <div className={`min-h-screen bg-gradient-to-br ${theme.bg} flex items-center justify-center`}>
-        <div className="text-center">
-          <div className="relative mb-6">
-            <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto"></div>
-            <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-cyan-400 rounded-full animate-spin mx-auto" style={{animationDelay: '150ms'}}></div>
-          </div>
-          <div className="flex items-center justify-center space-x-3">
-            <DockerLogo className="w-8 h-8 text-blue-600" />
-            <p className={`text-xl font-medium ${theme.text}`}>Loading Moby's pen collection...</p>
-          </div>
+      <div className="loading">
+        <div className="spinner"></div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <DockerLogo style={{ width: '32px', height: '32px', color: '#2563eb' }} />
+          <p style={{ fontSize: '20px', fontWeight: '500', color: '#1e293b' }}>Loading Moby's pen collection...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br ${theme.bg} transition-all duration-500`}>
+    <div style={{ minHeight: '100vh' }}>
       {/* Header */}
-      <header className={`sticky top-0 z-50 ${theme.cardBg} border-b shadow-lg`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg">
-                <DockerLogo className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className={`text-xl font-bold bg-gradient-to-r ${theme.accent} bg-clip-text text-transparent`}>
-                  Moby Pen Store
-                </h1>
-                <p className={`text-xs ${theme.textSecondary}`}>Premium Writing Instruments</p>
-              </div>
+      <header className="header">
+        <div className="header-content">
+          {/* Logo */}
+          <div className="logo">
+            <div className="logo-icon">
+              <DockerLogo style={{ width: '24px', height: '24px' }} />
             </div>
-
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-6">
-              <a href="#" className={`${theme.text} hover:text-blue-600 transition-colors font-medium text-sm`}>Collection</a>
-              <a href="#" className={`${theme.text} hover:text-blue-600 transition-colors font-medium text-sm`}>Brands</a>
-              <a href="#" className={`${theme.text} hover:text-blue-600 transition-colors font-medium text-sm`}>New Arrivals</a>
-              <a href="#" className={`${theme.text} hover:text-blue-600 transition-colors font-medium text-sm`}>About</a>
-            </nav>
-
-            {/* Controls */}
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={toggleDarkMode}
-                className={`p-2 rounded-xl ${theme.cardBg} border hover:scale-105 transition-all duration-200`}
-              >
-                {darkMode ? <Sun className="w-4 h-4 text-yellow-500" /> : <Moon className="w-4 h-4 text-blue-600" />}
-              </button>
-              
-              <button className={`p-2 rounded-xl ${theme.cardBg} border hover:scale-105 transition-all duration-200 relative`}>
-                <ShoppingCart className={`w-4 h-4 ${theme.text}`} />
-                {favorites.size > 0 && (
-                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center text-[10px]">
-                    {favorites.size}
-                  </span>
-                )}
-              </button>
-
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className={`md:hidden p-2 rounded-xl ${theme.cardBg} border`}
-              >
-                {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-              </button>
+            <div className="logo-text">
+              <h1>Moby Pen Store</h1>
+              <p>Premium Writing Instruments</p>
             </div>
+          </div>
+
+          {/* Desktop Navigation */}
+          <nav className="nav">
+            <button 
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: '#1e293b', 
+                fontWeight: '500', 
+                fontSize: '14px',
+                cursor: 'pointer',
+                textDecoration: 'none'
+              }}
+              onClick={() => setSelectedCategory('all')}
+            >
+              Collection
+            </button>
+            <button 
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: '#1e293b', 
+                fontWeight: '500', 
+                fontSize: '14px',
+                cursor: 'pointer',
+                textDecoration: 'none'
+              }}
+              onClick={() => console.log('Brands clicked')}
+            >
+              Brands
+            </button>
+            <button 
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: '#1e293b', 
+                fontWeight: '500', 
+                fontSize: '14px',
+                cursor: 'pointer',
+                textDecoration: 'none'
+              }}
+              onClick={() => setSelectedCategory('luxury')}
+            >
+              New Arrivals
+            </button>
+            <button 
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: '#1e293b', 
+                fontWeight: '500', 
+                fontSize: '14px',
+                cursor: 'pointer',
+                textDecoration: 'none'
+              }}
+              onClick={() => console.log('About clicked')}
+            >
+              About
+            </button>
+          </nav>
+
+          {/* Controls */}
+          <div className="controls">
+            <button className="btn" onClick={toggleDarkMode}>
+              {darkMode ? <Sun size={16} color="#fbbf24" /> : <Moon size={16} color="#2563eb" />}
+            </button>
+            
+            <button className="btn" style={{ position: 'relative' }}>
+              <ShoppingCart size={16} />
+              {favorites.size > 0 && (
+                <span style={{
+                  position: 'absolute',
+                  top: '-4px',
+                  right: '-4px',
+                  width: '16px',
+                  height: '16px',
+                  background: '#2563eb',
+                  color: 'white',
+                  fontSize: '10px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  {favorites.size}
+                </span>
+              )}
+            </button>
+
+            <button className="btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ display: 'none' }}>
+              {mobileMenuOpen ? <X size={16} /> : <Menu size={16} />}
+            </button>
           </div>
         </div>
       </header>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className={`md:hidden ${theme.cardBg} border-b shadow-lg`}>
-          <div className="max-w-7xl mx-auto px-4 py-4 space-y-2">
-            <a href="#" className={`block py-2 ${theme.text} hover:text-blue-600 text-sm`}>Collection</a>
-            <a href="#" className={`block py-2 ${theme.text} hover:text-blue-600 text-sm`}>Brands</a>
-            <a href="#" className={`block py-2 ${theme.text} hover:text-blue-600 text-sm`}>New Arrivals</a>
-            <a href="#" className={`block py-2 ${theme.text} hover:text-blue-600 text-sm`}>About</a>
-          </div>
-        </div>
-      )}
-
       {/* Hero Section */}
-      <section className="relative py-12 overflow-hidden">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="mb-8">
-            <div className="mb-6">
-              <h2 className={`text-4xl md:text-5xl font-bold ${theme.text} leading-tight mb-2`}>
-                Welcome to Moby Pen Store
-              </h2>
-              <p className={`text-sm ${theme.textSecondary}`}>Curated by Docker</p>
-            </div>
+      <section className="hero">
+        <div className="container">
+          <div style={{ marginBottom: '32px' }}>
+            <h2>Welcome to Moby Pen Store</h2>
+            <p style={{ fontSize: '14px', color: '#64748b', margin: '8px 0' }}>Curated by Docker</p>
             
-            <p className={`text-lg md:text-xl ${theme.textSecondary} mb-4 max-w-2xl mx-auto`}>
+            <p style={{ fontSize: '18px', color: '#64748b', margin: '16px auto', maxWidth: '600px' }}>
               Discover premium writing instruments crafted for excellence
             </p>
-            <p className={`text-sm ${theme.textSecondary} mb-8 opacity-80`}>
+            <p style={{ fontSize: '14px', color: '#64748b', margin: '32px 0', opacity: '0.8' }}>
               ✒️ Luxury Pens • Professional Tools • Everyday Essentials
             </p>
           </div>
           
           {/* Search Bar */}
-          <div className="relative max-w-md mx-auto mb-6">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <div className="search-container">
+            <Search className="search-icon" size={16} />
             <input
               type="text"
               placeholder="Search pens, brands..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full pl-10 pr-4 py-3 rounded-2xl ${theme.cardBg} border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all`}
+              className="search-input"
             />
           </div>
 
           {/* Category Filter */}
-          <div className="flex justify-center flex-wrap gap-2 mb-8">
+          <div className="categories">
             {categories.map(category => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-full transition-all capitalize font-medium text-sm ${
-                  selectedCategory === category
-                    ? `bg-gradient-to-r ${theme.accent} text-white shadow-lg`
-                    : `${theme.cardBg} border ${theme.text} hover:scale-105`
-                }`}
+                className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
               >
                 {category}
               </button>
@@ -295,96 +315,87 @@ const MobyPenStore = () => {
       </section>
 
       {/* Products Grid */}
-      <section className="py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section style={{ padding: '32px 0' }}>
+        <div className="container">
           {error && (
-            <div className={`text-center py-6 mb-6 ${theme.cardBg} border rounded-2xl`}>
-              <p className={`text-sm ${theme.textSecondary}`}>
-                {error}
-              </p>
-              <p className={`text-xs ${theme.textSecondary} mt-1`}>
+            <div className="error-message">
+              <p>{error}</p>
+              <p style={{ fontSize: '12px', marginTop: '4px' }}>
                 Showing demo products below
               </p>
             </div>
           )}
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="products-grid">
             {filteredProducts.map(product => (
-              <div
-                key={product.id}
-                className={`group ${theme.cardBg} border rounded-2xl p-5 hover:scale-105 transition-all duration-300 hover:shadow-2xl relative overflow-hidden`}
-              >
+              <div key={product.id} className="product-card">
                 {/* Favorite Button */}
                 <button
                   onClick={() => toggleFavorite(product.id)}
-                  className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-all"
+                  className="favorite-btn"
                 >
                   <Heart
-                    className={`w-4 h-4 ${favorites.has(product.id) ? 'text-red-500 fill-current' : 'text-gray-400'}`}
+                    size={16}
+                    color={favorites.has(product.id) ? '#ef4444' : '#9ca3af'}
+                    fill={favorites.has(product.id) ? '#ef4444' : 'none'}
                   />
                 </button>
 
                 {/* Sale Badge */}
                 {product.originalPrice && (
-                  <div className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-pink-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                  <div className="sale-badge">
                     Sale
                   </div>
                 )}
 
                 {/* Product Image */}
-                <div className="relative h-48 mb-4 rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+                <div className="product-image">
                   <img
                     src={product.image || "https://images.unsplash.com/photo-1565106430482-8f6e74349ca1?w=400&h=400&fit=crop&q=80"}
                     alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 </div>
 
                 {/* Product Info */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className={`text-xs font-medium px-2 py-1 rounded-full ${theme.cardBg} ${theme.textSecondary}`}>
-                      {product.brand}
-                    </span>
+                <div className="product-info">
+                  <div className="product-header">
+                    <span className="brand-tag">{product.brand}</span>
                     {product.rating && (
-                      <div className="flex items-center space-x-1">
-                        <Star className="w-3 h-3 text-yellow-500 fill-current" />
-                        <span className={`text-xs ${theme.textSecondary}`}>{product.rating}</span>
-                        <span className={`text-xs ${theme.textSecondary}`}>({product.reviews || 0})</span>
+                      <div className="rating">
+                        <span className="star">★</span>
+                        <span>{product.rating}</span>
+                        <span>({product.reviews || 0})</span>
                       </div>
                     )}
                   </div>
 
-                  <h3 className={`text-lg font-bold ${theme.text} line-clamp-2`}>{product.name}</h3>
-                  <p className={`text-xs ${theme.textSecondary}`}>{product.type}</p>
+                  <h3 className="product-title">{product.name}</h3>
+                  <p className="product-type">{product.type}</p>
                   
-                  <p className={`text-xs ${theme.textSecondary} line-clamp-2`}>{product.description}</p>
+                  <p className="product-description">{product.description}</p>
 
-                  <div className="flex items-center space-x-2">
-                    <span className={`text-xl font-bold ${theme.text}`}>${product.price.toFixed(2)}</span>
+                  <div className="price-container">
+                    <span className="price">${product.price.toFixed(2)}</span>
                     {product.originalPrice && (
-                      <span className="text-sm text-gray-400 line-through">${product.originalPrice.toFixed(2)}</span>
+                      <span className="original-price">${product.originalPrice.toFixed(2)}</span>
                     )}
                   </div>
 
                   {/* Stock Status */}
-                  <div className={`flex items-center space-x-1 text-xs ${product.in_stock ? 'text-green-600' : 'text-red-500'}`}>
-                    <div className={`w-1.5 h-1.5 rounded-full ${product.in_stock ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                    <span>{product.in_stock ? 'In Stock' : 'Out of Stock'}</span>
+                  <div className="stock-status">
+                    <div className={`stock-dot ${product.in_stock ? 'in-stock' : 'out-of-stock'}`}></div>
+                    <span className={product.in_stock ? 'in-stock' : 'out-of-stock'}>
+                      {product.in_stock ? 'In Stock' : 'Out of Stock'}
+                    </span>
                   </div>
 
                   {/* Add to Cart Button */}
                   <button
                     disabled={!product.in_stock}
-                    className={`w-full py-2.5 rounded-xl font-medium transition-all duration-200 flex items-center justify-center space-x-2 text-sm ${
-                      product.in_stock
-                        ? `${theme.button} text-white hover:scale-105 active:scale-95 shadow-lg`
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`}
+                    className="add-to-cart"
                   >
-                    <ShoppingCart className="w-4 h-4" />
+                    <ShoppingCart size={16} />
                     <span>{product.in_stock ? 'Add to Cart' : 'Out of Stock'}</span>
                   </button>
                 </div>
@@ -393,78 +404,211 @@ const MobyPenStore = () => {
           </div>
 
           {filteredProducts.length === 0 && (
-            <div className="text-center py-16">
-              <div className="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
-                <Search className="w-8 h-8 text-gray-400" />
+            <div style={{ textAlign: 'center', padding: '64px 0' }}>
+              <div style={{ 
+                width: '64px', 
+                height: '64px', 
+                margin: '0 auto 16px', 
+                background: '#e5e7eb', 
+                borderRadius: '50%', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center' 
+              }}>
+                <Search size={32} color="#9ca3af" />
               </div>
-              <p className={`text-lg ${theme.textSecondary}`}>No pens found matching your criteria</p>
-              <p className={`text-sm ${theme.textSecondary} mt-2`}>Try adjusting your search or category filter</p>
+              <p style={{ fontSize: '18px', color: '#64748b' }}>No pens found matching your criteria</p>
+              <p style={{ fontSize: '14px', color: '#64748b', marginTop: '8px' }}>Try adjusting your search or category filter</p>
             </div>
           )}
         </div>
       </section>
 
       {/* Footer */}
-      <footer className={`mt-16 ${theme.cardBg} border-t`}>
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Brand */}
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg flex items-center justify-center shadow-lg">
-                  <DockerLogo className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h3 className={`text-lg font-bold bg-gradient-to-r ${theme.accent} bg-clip-text text-transparent`}>
-                    Moby Pen Store
-                  </h3>
-                  <p className={`text-xs ${theme.textSecondary}`}>Premium Writing Instruments</p>
-                </div>
+      <footer className="footer">
+        <div className="footer-content">
+          {/* Brand */}
+          <div style={{ gridColumn: 'span 2' }}>
+            <div className="logo" style={{ marginBottom: '16px' }}>
+              <div className="logo-icon" style={{ width: '32px', height: '32px' }}>
+                <DockerLogo style={{ width: '20px', height: '20px' }} />
               </div>
-              <p className={`text-sm ${theme.textSecondary} mb-4 max-w-md`}>
-                Discover the finest collection of writing instruments from renowned brands worldwide. 
-                Quality craftsmanship meets modern technology.
-              </p>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <h4 className={`font-bold ${theme.text} mb-3 text-sm`}>Quick Links</h4>
-              <div className="space-y-2">
-                <a href="#" className={`block text-xs ${theme.textSecondary} hover:text-blue-600 transition-colors`}>Our Collection</a>
-                <a href="#" className={`block text-xs ${theme.textSecondary} hover:text-blue-600 transition-colors`}>Brand Partners</a>
-                <a href="#" className={`block text-xs ${theme.textSecondary} hover:text-blue-600 transition-colors`}>Gift Cards</a>
-                <a href="#" className={`block text-xs ${theme.textSecondary} hover:text-blue-600 transition-colors`}>Care Guide</a>
+              <div className="logo-text">
+                <h3 style={{ fontSize: '18px', margin: '0' }}>Moby Pen Store</h3>
+                <p style={{ fontSize: '12px', margin: '0' }}>Premium Writing Instruments</p>
               </div>
             </div>
-
-            {/* Support */}
-            <div>
-              <h4 className={`font-bold ${theme.text} mb-3 text-sm`}>Support</h4>
-              <div className="space-y-2">
-                <a href="#" className={`block text-xs ${theme.textSecondary} hover:text-blue-600 transition-colors`}>Contact Us</a>
-                <a href="#" className={`block text-xs ${theme.textSecondary} hover:text-blue-600 transition-colors`}>Shipping Info</a>
-                <a href="#" className={`block text-xs ${theme.textSecondary} hover:text-blue-600 transition-colors`}>Returns</a>
-                <a href="#" className={`block text-xs ${theme.textSecondary} hover:text-blue-600 transition-colors`}>FAQ</a>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-6 mt-8 text-center">
-            <p className={`text-xs ${theme.textSecondary}`}>
-              © 2024 Moby Pen Store • Powered by Docker • All rights reserved.
+            <p style={{ fontSize: '14px', color: '#64748b', margin: '0 0 16px 0', maxWidth: '400px' }}>
+              Discover the finest collection of writing instruments from renowned brands worldwide. 
+              Quality craftsmanship meets modern technology.
             </p>
           </div>
+
+          {/* Quick Links */}
+          <div className="footer-section">
+            <h4>Quick Links</h4>
+            <div>
+              <button 
+                style={{ 
+                  display: 'block', 
+                  background: 'none', 
+                  border: 'none', 
+                  color: '#64748b', 
+                  fontSize: '12px',
+                  margin: '8px 0',
+                  padding: '0',
+                  cursor: 'pointer',
+                  textAlign: 'left'
+                }}
+                onClick={() => setSelectedCategory('all')}
+              >
+                Our Collection
+              </button>
+              <button 
+                style={{ 
+                  display: 'block', 
+                  background: 'none', 
+                  border: 'none', 
+                  color: '#64748b', 
+                  fontSize: '12px',
+                  margin: '8px 0',
+                  padding: '0',
+                  cursor: 'pointer',
+                  textAlign: 'left'
+                }}
+                onClick={() => console.log('Brand Partners')}
+              >
+                Brand Partners
+              </button>
+              <button 
+                style={{ 
+                  display: 'block', 
+                  background: 'none', 
+                  border: 'none', 
+                  color: '#64748b', 
+                  fontSize: '12px',
+                  margin: '8px 0',
+                  padding: '0',
+                  cursor: 'pointer',
+                  textAlign: 'left'
+                }}
+                onClick={() => console.log('Gift Cards')}
+              >
+                Gift Cards
+              </button>
+              <button 
+                style={{ 
+                  display: 'block', 
+                  background: 'none', 
+                  border: 'none', 
+                  color: '#64748b', 
+                  fontSize: '12px',
+                  margin: '8px 0',
+                  padding: '0',
+                  cursor: 'pointer',
+                  textAlign: 'left'
+                }}
+                onClick={() => console.log('Care Guide')}
+              >
+                Care Guide
+              </button>
+            </div>
+          </div>
+
+          {/* Support */}
+          <div className="footer-section">
+            <h4>Support</h4>
+            <div>
+              <button 
+                style={{ 
+                  display: 'block', 
+                  background: 'none', 
+                  border: 'none', 
+                  color: '#64748b', 
+                  fontSize: '12px',
+                  margin: '8px 0',
+                  padding: '0',
+                  cursor: 'pointer',
+                  textAlign: 'left'
+                }}
+                onClick={() => console.log('Contact Us')}
+              >
+                Contact Us
+              </button>
+              <button 
+                style={{ 
+                  display: 'block', 
+                  background: 'none', 
+                  border: 'none', 
+                  color: '#64748b', 
+                  fontSize: '12px',
+                  margin: '8px 0',
+                  padding: '0',
+                  cursor: 'pointer',
+                  textAlign: 'left'
+                }}
+                onClick={() => console.log('Shipping Info')}
+              >
+                Shipping Info
+              </button>
+              <button 
+                style={{ 
+                  display: 'block', 
+                  background: 'none', 
+                  border: 'none', 
+                  color: '#64748b', 
+                  fontSize: '12px',
+                  margin: '8px 0',
+                  padding: '0',
+                  cursor: 'pointer',
+                  textAlign: 'left'
+                }}
+                onClick={() => console.log('Returns')}
+              >
+                Returns
+              </button>
+              <button 
+                style={{ 
+                  display: 'block', 
+                  background: 'none', 
+                  border: 'none', 
+                  color: '#64748b', 
+                  fontSize: '12px',
+                  margin: '8px 0',
+                  padding: '0',
+                  cursor: 'pointer',
+                  textAlign: 'left'
+                }}
+                onClick={() => console.log('FAQ')}
+              >
+                FAQ
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="footer-bottom">
+          <p>© 2024 Moby Pen Store • Powered by Docker • All rights reserved.</p>
         </div>
       </footer>
 
       {/* Floating AI Assistant */}
-      <button
-        onClick={openAIAssistant}
-        className="fixed bottom-6 right-6 w-12 h-12 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full shadow-2xl hover:scale-110 transition-all duration-300 flex items-center justify-center group"
-      >
-        <span className="text-lg">💬</span>
-        <div className="absolute -top-10 right-0 bg-black text-white px-2 py-1 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+      <button onClick={openAIAssistant} className="floating-btn">
+        💬
+        <div style={{
+          position: 'absolute',
+          top: '-40px',
+          right: '0',
+          background: 'black',
+          color: 'white',
+          padding: '4px 8px',
+          borderRadius: '8px',
+          fontSize: '12px',
+          opacity: '0',
+          transition: 'opacity 0.2s',
+          whiteSpace: 'nowrap',
+          pointerEvents: 'none'
+        }}>
           Pen Expert Chat
         </div>
       </button>
