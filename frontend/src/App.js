@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, ShoppingCart, Star, Heart, Search, Menu, X } from 'lucide-react';
+import { Moon, Sun, ShoppingCart, Star, Heart, Search, Menu, X, Info } from 'lucide-react';
 
 // Proper Docker Whale Logo with Containers (like the image provided)
 const DockerWhaleIcon = ({ className = "w-8 h-8" }) => (
@@ -36,6 +36,8 @@ const MobyPenStore = () => {
   const [favorites, setFavorites] = useState(new Set());
   const [error, setError] = useState(null);
   const [showDemoDataNotice, setShowDemoDataNotice] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
+  const [showBrands, setShowBrands] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -54,7 +56,7 @@ const MobyPenStore = () => {
       } catch (err) {
         console.error('Catalogue error:', err);
         
-        // Fallback to mock data with high-quality pen images
+        // Fallback to mock data with working pen images
         const mockProducts = [
           {
             id: 1,
@@ -68,7 +70,8 @@ const MobyPenStore = () => {
             rating: 4.8,
             reviews: 342,
             category: "luxury",
-            image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&h=600&fit=crop&q=80&auto=format"
+            isNew: true,
+            image: "https://images.pexels.com/photos/159784/fountain-pen-ink-writing-calligraphy-159784.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop"
           },
           {
             id: 2,
@@ -81,7 +84,8 @@ const MobyPenStore = () => {
             rating: 4.6,
             reviews: 1284,
             category: "everyday",
-            image: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&h=600&fit=crop&q=80&auto=format"
+            isNew: false,
+            image: "https://images.pexels.com/photos/1143410/pexels-photo-1143410.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop"
           },
           {
             id: 3,
@@ -94,7 +98,8 @@ const MobyPenStore = () => {
             rating: 4.7,
             reviews: 892,
             category: "everyday",
-            image: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=600&h=600&fit=crop&q=80&auto=format"
+            isNew: false,
+            image: "https://images.pexels.com/photos/261631/pexels-photo-261631.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop"
           },
           {
             id: 4,
@@ -107,7 +112,8 @@ const MobyPenStore = () => {
             rating: 4.5,
             reviews: 267,
             category: "professional",
-            image: "https://images.unsplash.com/photo-1625916674103-85be0c8e0d2e?w=600&h=600&fit=crop&q=80&auto=format"
+            isNew: true,
+            image: "https://images.pexels.com/photos/2058128/pexels-photo-2058128.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop"
           },
           {
             id: 5,
@@ -120,7 +126,8 @@ const MobyPenStore = () => {
             rating: 4.4,
             reviews: 189,
             category: "professional",
-            image: "https://images.unsplash.com/photo-1508057198894-247b23fe5ade?w=600&h=600&fit=crop&q=80&auto=format"
+            isNew: false,
+            image: "https://images.pexels.com/photos/1143041/pexels-photo-1143041.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop"
           },
           {
             id: 6,
@@ -133,7 +140,8 @@ const MobyPenStore = () => {
             rating: 4.3,
             reviews: 445,
             category: "professional",
-            image: "https://images.unsplash.com/photo-1542013936693-884638332954?w=600&h=600&fit=crop&q=80&auto=format"
+            isNew: true,
+            image: "https://images.pexels.com/photos/461772/pexels-photo-461772.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop"
           }
         ];
         setProducts(mockProducts);
@@ -170,7 +178,13 @@ const MobyPenStore = () => {
                          (product.type && product.type.toLowerCase().includes(searchLower)) ||
                          (product.description && product.description.toLowerCase().includes(searchLower));
     
-    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+    let matchesCategory = true;
+    if (selectedCategory === 'newArrivals') {
+      matchesCategory = product.isNew === true;
+    } else if (selectedCategory !== 'all') {
+      matchesCategory = product.category === selectedCategory;
+    }
+    
     return matchesSearch && matchesCategory;
   });
 
@@ -189,6 +203,47 @@ const MobyPenStore = () => {
     setSearchQuery('');
   };
 
+  // Navigation handlers
+  const handleCollectionClick = () => {
+    setSelectedCategory('all');
+    setSearchQuery('');
+    setShowAbout(false);
+    setShowBrands(false);
+    // Scroll to products section
+    document.querySelector('.products-grid')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleBrandsClick = () => {
+    setShowAbout(false);
+    setShowBrands(!showBrands);
+  };
+
+  const handleNewArrivalsClick = () => {
+    setSelectedCategory('newArrivals');
+    setSearchQuery('');
+    setShowAbout(false);
+    setShowBrands(false);
+    // Scroll to products section
+    document.querySelector('.products-grid')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleAboutClick = () => {
+    setShowBrands(false);
+    setShowAbout(!showAbout);
+  };
+
+  const handleBrandSelect = (brand) => {
+    setSearchQuery(brand);
+    setSelectedCategory('all');
+    setShowBrands(false);
+    setShowAbout(false);
+    // Scroll to products section
+    document.querySelector('.products-grid')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Get unique brands
+  const uniqueBrands = [...new Set(products.map(p => p.brand))].sort();
+
   if (loading) {
     return (
       <div className="loading">
@@ -206,24 +261,34 @@ const MobyPenStore = () => {
       {/* Header */}
       <header className="header">
         <div className="header-content">
-          {/* Logo - Fixed alignment */}
-          <div className="logo" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div className="logo-icon" style={{ 
-              width: '40px', 
-              height: '40px', 
+          {/* Logo - Fixed alignment and sizing */}
+          <div 
+            className="logo" 
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '12px',
+              cursor: 'pointer'
+            }}
+            onClick={handleCollectionClick}
+          >
+            <div style={{ 
+              width: '48px', 
+              height: '48px', 
               background: 'linear-gradient(45deg, #2563eb, #06b6d4)', 
               borderRadius: '12px', 
               display: 'flex', 
               alignItems: 'center', 
               justifyContent: 'center',
-              color: 'white'
+              color: 'white',
+              boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)'
             }}>
-              <DockerWhaleIcon style={{ width: '24px', height: '24px' }} />
+              <DockerWhaleIcon style={{ width: '28px', height: '28px' }} />
             </div>
             <div className="logo-text">
               <h1 style={{ 
                 margin: '0',
-                fontSize: '20px',
+                fontSize: '22px',
                 fontWeight: 'bold',
                 background: 'linear-gradient(45deg, #2563eb, #06b6d4)',
                 WebkitBackgroundClip: 'text',
@@ -243,62 +308,135 @@ const MobyPenStore = () => {
             </div>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="nav">
+          {/* Desktop Navigation - Made functional */}
+          <nav className="nav" style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
             <button 
               style={{ 
                 background: 'none', 
                 border: 'none', 
-                color: '#1e293b', 
-                fontWeight: '500', 
+                color: selectedCategory === 'all' ? '#2563eb' : '#1e293b', 
+                fontWeight: selectedCategory === 'all' ? '600' : '500', 
                 fontSize: '14px',
                 cursor: 'pointer',
-                textDecoration: 'none'
+                textDecoration: 'none',
+                padding: '8px 12px',
+                borderRadius: '8px',
+                transition: 'all 0.2s',
+                backgroundColor: selectedCategory === 'all' ? 'rgba(37, 99, 235, 0.1)' : 'transparent'
               }}
-              onClick={() => setSelectedCategory('all')}
+              onClick={handleCollectionClick}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(37, 99, 235, 0.1)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = selectedCategory === 'all' ? 'rgba(37, 99, 235, 0.1)' : 'transparent'}
             >
               Collection
             </button>
+
+            <div style={{ position: 'relative' }}>
+              <button 
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  color: showBrands ? '#2563eb' : '#1e293b', 
+                  fontWeight: showBrands ? '600' : '500', 
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  textDecoration: 'none',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  transition: 'all 0.2s',
+                  backgroundColor: showBrands ? 'rgba(37, 99, 235, 0.1)' : 'transparent'
+                }}
+                onClick={handleBrandsClick}
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(37, 99, 235, 0.1)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = showBrands ? 'rgba(37, 99, 235, 0.1)' : 'transparent'}
+              >
+                Brands ▾
+              </button>
+              
+              {/* Brands Dropdown */}
+              {showBrands && (
+                <div style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: '0',
+                  background: 'white',
+                  border: '1px solid rgba(0, 0, 0, 0.1)',
+                  borderRadius: '12px',
+                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
+                  padding: '8px',
+                  minWidth: '150px',
+                  zIndex: 1000,
+                  marginTop: '4px'
+                }}>
+                  {uniqueBrands.map(brand => (
+                    <button
+                      key={brand}
+                      onClick={() => handleBrandSelect(brand)}
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        border: 'none',
+                        background: 'none',
+                        textAlign: 'left',
+                        fontSize: '14px',
+                        color: '#1e293b',
+                        cursor: 'pointer',
+                        borderRadius: '8px',
+                        transition: 'background-color 0.2s'
+                      }}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = '#f8fafc'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                    >
+                      {brand}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <button 
               style={{ 
                 background: 'none', 
                 border: 'none', 
-                color: '#1e293b', 
-                fontWeight: '500', 
+                color: selectedCategory === 'newArrivals' ? '#2563eb' : '#1e293b', 
+                fontWeight: selectedCategory === 'newArrivals' ? '600' : '500', 
                 fontSize: '14px',
                 cursor: 'pointer',
-                textDecoration: 'none'
+                textDecoration: 'none',
+                padding: '8px 12px',
+                borderRadius: '8px',
+                transition: 'all 0.2s',
+                backgroundColor: selectedCategory === 'newArrivals' ? 'rgba(37, 99, 235, 0.1)' : 'transparent'
               }}
-              onClick={() => console.log('Brands clicked')}
-            >
-              Brands
-            </button>
-            <button 
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: '#1e293b', 
-                fontWeight: '500', 
-                fontSize: '14px',
-                cursor: 'pointer',
-                textDecoration: 'none'
-              }}
-              onClick={() => setSelectedCategory('luxury')}
+              onClick={handleNewArrivalsClick}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(37, 99, 235, 0.1)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = selectedCategory === 'newArrivals' ? 'rgba(37, 99, 235, 0.1)' : 'transparent'}
             >
               New Arrivals
             </button>
+
             <button 
               style={{ 
                 background: 'none', 
                 border: 'none', 
-                color: '#1e293b', 
-                fontWeight: '500', 
+                color: showAbout ? '#2563eb' : '#1e293b', 
+                fontWeight: showAbout ? '600' : '500', 
                 fontSize: '14px',
                 cursor: 'pointer',
-                textDecoration: 'none'
+                textDecoration: 'none',
+                padding: '8px 12px',
+                borderRadius: '8px',
+                transition: 'all 0.2s',
+                backgroundColor: showAbout ? 'rgba(37, 99, 235, 0.1)' : 'transparent',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
               }}
-              onClick={() => console.log('About clicked')}
+              onClick={handleAboutClick}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(37, 99, 235, 0.1)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = showAbout ? 'rgba(37, 99, 235, 0.1)' : 'transparent'}
             >
+              <Info size={14} />
               About
             </button>
           </nav>
@@ -336,6 +474,48 @@ const MobyPenStore = () => {
             </button>
           </div>
         </div>
+
+        {/* About Section Dropdown */}
+        {showAbout && (
+          <div style={{
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(10px)',
+            borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
+            padding: '24px 0'
+          }}>
+            <div className="container" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
+                <div>
+                  <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: 'bold', color: '#1e293b' }}>
+                    About Moby Pen Store
+                  </h3>
+                  <p style={{ margin: '0', fontSize: '14px', color: '#64748b', lineHeight: '1.5' }}>
+                    Curated by Docker, we showcase premium writing instruments from renowned brands worldwide. 
+                    Our collection represents quality craftsmanship and modern innovation.
+                  </p>
+                </div>
+                <div>
+                  <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: 'bold', color: '#1e293b' }}>
+                    Our Mission
+                  </h3>
+                  <p style={{ margin: '0', fontSize: '14px', color: '#64748b', lineHeight: '1.5' }}>
+                    To democratize access to exceptional writing tools, making premium pens available 
+                    to writers, professionals, and pen enthusiasts everywhere.
+                  </p>
+                </div>
+                <div>
+                  <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: 'bold', color: '#1e293b' }}>
+                    Powered by Docker
+                  </h3>
+                  <p style={{ margin: '0', fontSize: '14px', color: '#64748b', lineHeight: '1.5' }}>
+                    This demo showcases modern containerized commerce, demonstrating how Docker 
+                    enables scalable, reliable e-commerce experiences.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Hero Section */}
@@ -413,6 +593,23 @@ const MobyPenStore = () => {
       {/* Products Grid */}
       <section style={{ padding: '32px 0' }}>
         <div className="container">
+          {/* Show current category */}
+          {selectedCategory === 'newArrivals' && (
+            <div style={{ 
+              textAlign: 'center', 
+              marginBottom: '24px',
+              padding: '16px',
+              background: 'rgba(16, 185, 129, 0.1)',
+              borderRadius: '12px',
+              border: '1px solid rgba(16, 185, 129, 0.2)'
+            }}>
+              <h3 style={{ margin: '0 0 8px 0', color: '#10b981', fontSize: '18px' }}>✨ New Arrivals</h3>
+              <p style={{ margin: '0', color: '#64748b', fontSize: '14px' }}>
+                Discover our latest pen additions to the collection
+              </p>
+            </div>
+          )}
+
           {/* Show subtle demo notice instead of error when fallback data is loaded */}
           {showDemoDataNotice && (
             <div style={{
@@ -463,7 +660,24 @@ const MobyPenStore = () => {
                   </div>
                 )}
 
-                {/* Product Image - High quality pen images */}
+                {/* New Badge */}
+                {product.isNew && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '12px',
+                    left: product.originalPrice ? '60px' : '12px',
+                    background: 'linear-gradient(45deg, #10b981, #34d399)',
+                    color: 'white',
+                    padding: '4px 8px',
+                    borderRadius: '12px',
+                    fontSize: '10px',
+                    fontWeight: '500'
+                  }}>
+                    NEW
+                  </div>
+                )}
+
+                {/* Product Image - Fixed with Pexels images and better fallback */}
                 <div className="product-image" style={{
                   width: '100%',
                   height: '200px',
@@ -480,34 +694,52 @@ const MobyPenStore = () => {
                     src={product.image}
                     alt={product.name}
                     loading="lazy"
+                    crossOrigin="anonymous"
                     style={{
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover',
                       transition: 'transform 0.3s ease'
                     }}
+                    onLoad={(e) => console.log(`Image loaded: ${product.name}`)}
                     onError={(e) => {
-                      // Fallback to pen icon if image fails
+                      console.log(`Image failed to load: ${product.name}`);
+                      // Create a beautiful fallback display
                       e.target.style.display = 'none';
-                      const fallback = document.createElement('div');
-                      fallback.style.cssText = `
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        justify-content: center;
-                        color: #64748b;
-                        font-size: 14px;
-                        text-align: center;
-                        padding: 20px;
-                        width: 100%;
-                        height: 100%;
+                      const container = e.target.parentElement;
+                      container.innerHTML = `
+                        <div style="
+                          display: flex;
+                          flex-direction: column;
+                          align-items: center;
+                          justify-content: center;
+                          color: #64748b;
+                          text-align: center;
+                          padding: 20px;
+                          width: 100%;
+                          height: 100%;
+                          background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+                        ">
+                          <div style="
+                            font-size: 48px; 
+                            margin-bottom: 12px;
+                            background: linear-gradient(45deg, #2563eb, #06b6d4);
+                            -webkit-background-clip: text;
+                            -webkit-text-fill-color: transparent;
+                          ">✒️</div>
+                          <div style="font-weight: 600; font-size: 14px; color: #1e293b; margin-bottom: 4px;">${product.brand}</div>
+                          <div style="font-size: 12px; color: #64748b; text-align: center; line-height: 1.3;">${product.name}</div>
+                          <div style="
+                            margin-top: 8px;
+                            padding: 4px 8px;
+                            background: rgba(37, 99, 235, 0.1);
+                            border-radius: 12px;
+                            font-size: 10px;
+                            color: #2563eb;
+                            font-weight: 500;
+                          ">${product.type}</div>
+                        </div>
                       `;
-                      fallback.innerHTML = `
-                        <div style="font-size: 48px; margin-bottom: 8px;">🖋️</div>
-                        <div style="font-weight: 500;">${product.brand}</div>
-                        <div>${product.name}</div>
-                      `;
-                      e.target.parentElement.appendChild(fallback);
                     }}
                   />
                 </div>
@@ -567,7 +799,7 @@ const MobyPenStore = () => {
                 background: '#e5e7eb', 
                 borderRadius: '50%', 
                 display: 'flex', 
-                alignItems: 'center', 
+                alignItems: 'center',
                 justifyContent: 'center' 
               }}>
                 <Search size={32} color="#9ca3af" />
@@ -659,7 +891,7 @@ const MobyPenStore = () => {
                   cursor: 'pointer',
                   textAlign: 'left'
                 }}
-                onClick={() => console.log('Brand Partners')}
+                onClick={() => handleBrandSelect('Mont Blanc')}
               >
                 Brand Partners
               </button>
