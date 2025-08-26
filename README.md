@@ -2,7 +2,7 @@
 # 🖊️ Multi-Agent Pen Shop - MCP Security Demo Platform
 *AI Shopping Assistant with Docker MCP Gateway & Security Interceptors*
 
-<img width="1320" height="786" alt="image" src="https://github.com/user-attachments/assets/746b47f2-9559-4ab7-b310-b83390dd9157" />
+<img width="1586" height="971" alt="image" src="https://github.com/user-attachments/assets/1754559d-74f4-4737-a48b-8cf4b463eaea" />
 
 
 A complete multi-agent e-commerce platform showcasing **secure AI interactions** through:
