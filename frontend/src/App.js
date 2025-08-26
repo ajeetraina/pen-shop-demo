@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, ShoppingCart, Star, Heart, Search, Menu, X, Info, CheckCircle, XCircle } from 'lucide-react';
+import { Moon, Sun, ShoppingCart, Star, Heart, Search, Menu, X, Info, Pen, Edit, Zap, Award, Circle } from 'lucide-react';
 
 // Proper Docker Whale Logo with Containers (like the image provided)
 const DockerWhaleIcon = ({ className = "w-8 h-8" }) => (
@@ -26,6 +26,69 @@ const DockerWhaleIcon = ({ className = "w-8 h-8" }) => (
   </svg>
 );
 
+// Pen Icon Components - NO external images needed!
+const PenIcon = ({ type, brand, color = "#2563eb" }) => {
+  const icons = {
+    "Mont Blanc": <Award size={48} color={color} />,
+    "Pilot": <Zap size={48} color={color} />,
+    "Lamy": <Edit size={48} color={color} />,
+    "Parker": <Pen size={48} color={color} />,
+    "Waterman": <Circle size={48} color={color} />,
+    "Cross": <Star size={48} color={color} />
+  };
+
+  return (
+    <div style={{
+      width: '100%',
+      height: '200px',
+      background: `linear-gradient(135deg, ${color}15, ${color}25)`,
+      borderRadius: '12px',
+      marginBottom: '16px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'relative',
+      border: `2px solid ${color}25`
+    }}>
+      {/* Brand Icon */}
+      <div style={{ marginBottom: '12px' }}>
+        {icons[brand] || <Pen size={48} color={color} />}
+      </div>
+      
+      {/* Pen Type Emoji */}
+      <div style={{ fontSize: '24px', marginBottom: '8px' }}>
+        {type === "Fountain Pen" ? "🖋️" : type === "Ballpoint Pen" ? "🖊️" : "✒️"}
+      </div>
+      
+      {/* Brand Name */}
+      <div style={{
+        fontSize: '14px',
+        fontWeight: '600',
+        color: color,
+        textAlign: 'center'
+      }}>
+        {brand}
+      </div>
+      
+      {/* Clean design indicator */}
+      <div style={{
+        position: 'absolute',
+        bottom: '8px',
+        right: '8px',
+        background: color,
+        color: 'white',
+        padding: '2px 6px',
+        borderRadius: '4px',
+        fontSize: '10px',
+        fontWeight: '500'
+      }}>
+        ✓
+      </div>
+    </div>
+  );
+};
+
 const MobyPenStore = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,15 +101,6 @@ const MobyPenStore = () => {
   const [showDemoDataNotice, setShowDemoDataNotice] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [showBrands, setShowBrands] = useState(false);
-  const [imageLoadStatus, setImageLoadStatus] = useState({});
-
-  // Track image loading status
-  const updateImageStatus = (productId, status) => {
-    setImageLoadStatus(prev => ({
-      ...prev,
-      [productId]: status
-    }));
-  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -65,7 +119,7 @@ const MobyPenStore = () => {
       } catch (err) {
         console.error('Catalogue error:', err);
         
-        // Fallback to mock data with GUARANTEED working images
+        // Clean product data with brand colors - NO IMAGES!
         const mockProducts = [
           {
             id: 1,
@@ -80,8 +134,7 @@ const MobyPenStore = () => {
             reviews: 342,
             category: "luxury",
             isNew: true,
-            // Using guaranteed reliable placeholder images
-            image: "https://via.placeholder.com/400x300/2563eb/ffffff?text=Mont+Blanc+Pen"
+            color: "#dc2626" // Red for Mont Blanc
           },
           {
             id: 2,
@@ -95,7 +148,7 @@ const MobyPenStore = () => {
             reviews: 1284,
             category: "everyday",
             isNew: false,
-            image: "https://via.placeholder.com/400x300/10b981/ffffff?text=Pilot+Metropolitan"
+            color: "#2563eb" // Blue for Pilot
           },
           {
             id: 3,
@@ -109,7 +162,7 @@ const MobyPenStore = () => {
             reviews: 892,
             category: "everyday",
             isNew: false,
-            image: "https://via.placeholder.com/400x300/f59e0b/ffffff?text=Lamy+Safari"
+            color: "#f59e0b" // Orange for Lamy
           },
           {
             id: 4,
@@ -123,7 +176,7 @@ const MobyPenStore = () => {
             reviews: 267,
             category: "professional",
             isNew: true,
-            image: "https://via.placeholder.com/400x300/8b5cf6/ffffff?text=Parker+Sonnet"
+            color: "#8b5cf6" // Purple for Parker
           },
           {
             id: 5,
@@ -137,7 +190,7 @@ const MobyPenStore = () => {
             reviews: 189,
             category: "professional",
             isNew: false,
-            image: "https://via.placeholder.com/400x300/ef4444/ffffff?text=Waterman+Expert"
+            color: "#10b981" // Green for Waterman
           },
           {
             id: 6,
@@ -151,7 +204,7 @@ const MobyPenStore = () => {
             reviews: 445,
             category: "professional",
             isNew: true,
-            image: "https://via.placeholder.com/400x300/06b6d4/ffffff?text=Cross+Century"
+            color: "#06b6d4" // Cyan for Cross
           }
         ];
         
@@ -201,9 +254,9 @@ const MobyPenStore = () => {
 
   const categories = ['all', 'luxury', 'everyday', 'professional'];
 
-  // FIXED: Open chatbot in SAME window - this should work correctly now
+  // FIXED: Open chatbot in SAME window
   const openAIAssistant = () => {
-    console.log('Opening chatbot in same window...');
+    console.log('🤖 Opening chatbot in same window...');
     // Force navigation in the same window/tab
     window.location.replace('http://localhost:3000');
   };
@@ -599,34 +652,6 @@ const MobyPenStore = () => {
         </div>
       </section>
 
-      {/* Image Verification Status Panel */}
-      {showDemoDataNotice && (
-        <div style={{
-          position: 'fixed',
-          top: '100px',
-          right: '20px',
-          background: 'rgba(255, 255, 255, 0.95)',
-          border: '1px solid rgba(0, 0, 0, 0.1)',
-          borderRadius: '12px',
-          padding: '12px',
-          fontSize: '12px',
-          maxWidth: '200px',
-          zIndex: 1000,
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-        }}>
-          <h4 style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 'bold' }}>✅ Image Status</h4>
-          <p style={{ margin: '4px 0', fontSize: '11px', color: '#10b981' }}>
-            Using reliable placeholder.com images
-          </p>
-          {products.map(product => (
-            <div key={product.id} style={{ display: 'flex', alignItems: 'center', gap: '4px', margin: '2px 0' }}>
-              <CheckCircle size={12} color="#10b981" />
-              <span style={{ fontSize: '10px' }}>{product.brand}</span>
-            </div>
-          ))}
-        </div>
-      )}
-
       {/* Products Grid */}
       <section style={{ padding: '32px 0' }}>
         <div className="container">
@@ -647,12 +672,12 @@ const MobyPenStore = () => {
             </div>
           )}
 
-          {/* Show subtle demo notice with image verification */}
+          {/* Clean demo notice - no image issues! */}
           {showDemoDataNotice && (
             <div style={{
-              background: 'rgba(59, 130, 246, 0.1)',
-              border: '1px solid rgba(59, 130, 246, 0.2)',
-              color: '#2563eb',
+              background: 'rgba(16, 185, 129, 0.1)',
+              border: '1px solid rgba(16, 185, 129, 0.2)',
+              color: '#10b981',
               padding: '12px 16px',
               borderRadius: '12px',
               textAlign: 'center',
@@ -663,8 +688,8 @@ const MobyPenStore = () => {
               justifyContent: 'center',
               gap: '8px'
             }}>
-              <DockerWhaleIcon style={{ width: '16px', height: '16px', color: '#2563eb' }} />
-              <span>Demo Mode: Images verified and loading properly ✅</span>
+              <DockerWhaleIcon style={{ width: '16px', height: '16px', color: '#10b981' }} />
+              <span>✅ Clean Icon Design - No Image Loading Issues!</span>
             </div>
           )}
           
@@ -714,68 +739,12 @@ const MobyPenStore = () => {
                   </div>
                 )}
 
-                {/* Product Image - SIMPLIFIED with guaranteed working images */}
-                <div 
-                  className="product-image" 
-                  style={{
-                    width: '100%',
-                    height: '200px',
-                    background: 'linear-gradient(135deg, #f8fafc, #e2e8f0)',
-                    borderRadius: '12px',
-                    marginBottom: '16px',
-                    overflow: 'hidden',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    position: 'relative'
-                  }}
-                >
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    loading="lazy"
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      transition: 'transform 0.3s ease'
-                    }}
-                    onLoad={() => {
-                      console.log(`✅ Image loaded: ${product.name}`);
-                      updateImageStatus(product.id, 'success');
-                    }}
-                    onError={(e) => {
-                      console.log(`❌ Image failed: ${product.name}`);
-                      updateImageStatus(product.id, 'error');
-                      // Fallback to data URI or inline SVG
-                      e.target.src = `data:image/svg+xml,${encodeURIComponent(`
-                        <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
-                          <rect width="400" height="300" fill="#2563eb"/>
-                          <text x="200" y="140" text-anchor="middle" fill="white" font-size="24" font-family="Arial">
-                            ${product.brand}
-                          </text>
-                          <text x="200" y="170" text-anchor="middle" fill="white" font-size="16" font-family="Arial">
-                            ${product.type}
-                          </text>
-                        </svg>
-                      `)}`;
-                    }}
-                  />
-                  
-                  {/* Image verification indicator */}
-                  <div style={{
-                    position: 'absolute',
-                    bottom: '8px',
-                    right: '8px',
-                    background: 'rgba(0, 0, 0, 0.7)',
-                    color: 'white',
-                    padding: '2px 6px',
-                    borderRadius: '4px',
-                    fontSize: '10px'
-                  }}>
-                    ✓ IMG
-                  </div>
-                </div>
+                {/* Clean Icon Design - NO EXTERNAL IMAGES! */}
+                <PenIcon 
+                  type={product.type} 
+                  brand={product.brand} 
+                  color={product.color}
+                />
 
                 {/* Product Info */}
                 <div className="product-info">
@@ -1040,11 +1009,11 @@ const MobyPenStore = () => {
         </div>
       </footer>
 
-      {/* Floating AI Assistant - FIXED to open in SAME window */}
+      {/* Floating AI Assistant - GUARANTEED to open in same window */}
       <button 
         onClick={openAIAssistant} 
         className="floating-btn" 
-        title="Open Pen Expert Chat in Same Window"
+        title="🤖 Open Pen Expert Chat in Same Window"
         style={{
           position: 'fixed',
           bottom: '20px',
@@ -1068,22 +1037,6 @@ const MobyPenStore = () => {
         onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
       >
         💬
-        <div style={{
-          position: 'absolute',
-          bottom: '70px',
-          right: '0',
-          background: 'black',
-          color: 'white',
-          padding: '8px 12px',
-          borderRadius: '8px',
-          fontSize: '12px',
-          opacity: '0',
-          transition: 'opacity 0.2s',
-          whiteSpace: 'nowrap',
-          pointerEvents: 'none'
-        }}>
-          Opens in SAME window ✓
-        </div>
       </button>
     </div>
   );
