@@ -146,7 +146,8 @@ const App = () => {
   });
 
   const openAIAssistant = () => {
-    window.open('http://localhost:3000', '_blank');
+    // Navigate to AI assistant in the same window
+    window.location.href = 'http://localhost:3000';
   };
 
   if (loading) {
@@ -302,10 +303,11 @@ const App = () => {
           <p>Showing {filteredProducts.length} of {products.length} premium writing instruments</p>
         </div>
 
-        {/* AI Assistant Button */}
+        {/* AI Assistant Button - Opens in Same Window */}
         <button 
           onClick={openAIAssistant}
           className="fixed bottom-6 right-6 bg-blue-600 text-white px-4 py-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm font-medium"
+          title="Chat with AI Pen Expert - Opens in same window"
         >
           💬 AI Pen Expert
         </button>
