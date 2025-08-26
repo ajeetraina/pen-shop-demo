@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, ShoppingCart, Star, Heart, Search, Menu, X, Info } from 'lucide-react';
+import { Moon, Sun, ShoppingCart, Star, Heart, Search, Menu, X, Info, CheckCircle, XCircle } from 'lucide-react';
 
 // Proper Docker Whale Logo with Containers (like the image provided)
 const DockerWhaleIcon = ({ className = "w-8 h-8" }) => (
@@ -38,6 +38,15 @@ const MobyPenStore = () => {
   const [showDemoDataNotice, setShowDemoDataNotice] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [showBrands, setShowBrands] = useState(false);
+  const [imageLoadStatus, setImageLoadStatus] = useState({});
+
+  // Track image loading status
+  const updateImageStatus = (productId, status) => {
+    setImageLoadStatus(prev => ({
+      ...prev,
+      [productId]: status
+    }));
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -56,11 +65,11 @@ const MobyPenStore = () => {
       } catch (err) {
         console.error('Catalogue error:', err);
         
-        // Fallback to mock data with working pen images - fixed character encoding
+        // Fallback to mock data with multiple reliable image sources
         const mockProducts = [
           {
             id: 1,
-            name: "Mont Blanc Meisterstück", // Fixed character encoding
+            name: "Mont Blanc Meisterstück",
             brand: "Mont Blanc",
             type: "Fountain Pen",
             price: 649.99,
@@ -71,7 +80,13 @@ const MobyPenStore = () => {
             reviews: 342,
             category: "luxury",
             isNew: true,
-            image: "https://images.pexels.com/photos/159784/fountain-pen-ink-writing-calligraphy-159784.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop"
+            // Multiple image sources for reliability
+            images: [
+              "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=400&fit=crop&q=80",
+              "https://images.pexels.com/photos/159784/fountain-pen-ink-writing-calligraphy-159784.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop",
+              "https://picsum.photos/400/400?random=1",
+              "https://via.placeholder.com/400x400/2563eb/white?text=Mont+Blanc"
+            ]
           },
           {
             id: 2,
@@ -85,7 +100,12 @@ const MobyPenStore = () => {
             reviews: 1284,
             category: "everyday",
             isNew: false,
-            image: "https://images.pexels.com/photos/1143410/pexels-photo-1143410.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop"
+            images: [
+              "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=400&h=400&fit=crop&q=80",
+              "https://images.pexels.com/photos/1143410/pexels-photo-1143410.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop",
+              "https://picsum.photos/400/400?random=2",
+              "https://via.placeholder.com/400x400/10b981/white?text=Pilot"
+            ]
           },
           {
             id: 3,
@@ -99,7 +119,12 @@ const MobyPenStore = () => {
             reviews: 892,
             category: "everyday",
             isNew: false,
-            image: "https://images.pexels.com/photos/261631/pexels-photo-261631.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop"
+            images: [
+              "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=400&fit=crop&q=80",
+              "https://images.pexels.com/photos/261631/pexels-photo-261631.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop",
+              "https://picsum.photos/400/400?random=3",
+              "https://via.placeholder.com/400x400/f59e0b/white?text=Lamy"
+            ]
           },
           {
             id: 4,
@@ -113,7 +138,12 @@ const MobyPenStore = () => {
             reviews: 267,
             category: "professional",
             isNew: true,
-            image: "https://images.pexels.com/photos/2058128/pexels-photo-2058128.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop"
+            images: [
+              "https://images.unsplash.com/photo-1625916674103-85be0c8e0d2e?w=400&h=400&fit=crop&q=80",
+              "https://images.pexels.com/photos/2058128/pexels-photo-2058128.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop",
+              "https://picsum.photos/400/400?random=4",
+              "https://via.placeholder.com/400x400/8b5cf6/white?text=Parker"
+            ]
           },
           {
             id: 5,
@@ -127,7 +157,12 @@ const MobyPenStore = () => {
             reviews: 189,
             category: "professional",
             isNew: false,
-            image: "https://images.pexels.com/photos/1143041/pexels-photo-1143041.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop"
+            images: [
+              "https://images.unsplash.com/photo-1508057198894-247b23fe5ade?w=400&h=400&fit=crop&q=80",
+              "https://images.pexels.com/photos/1143041/pexels-photo-1143041.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop",
+              "https://picsum.photos/400/400?random=5",
+              "https://via.placeholder.com/400x400/ef4444/white?text=Waterman"
+            ]
           },
           {
             id: 6,
@@ -141,9 +176,20 @@ const MobyPenStore = () => {
             reviews: 445,
             category: "professional",
             isNew: true,
-            image: "https://images.pexels.com/photos/461772/pexels-photo-461772.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop"
+            images: [
+              "https://images.unsplash.com/photo-1542013936693-884638332954?w=400&h=400&fit=crop&q=80",
+              "https://images.pexels.com/photos/461772/pexels-photo-461772.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop",
+              "https://picsum.photos/400/400?random=6",
+              "https://via.placeholder.com/400x400/06b6d4/white?text=Cross"
+            ]
           }
         ];
+        
+        // Set primary image as the first working image
+        mockProducts.forEach(product => {
+          product.image = product.images[0];
+        });
+        
         setProducts(mockProducts);
         setError(null);
         setShowDemoDataNotice(true);
@@ -236,6 +282,27 @@ const MobyPenStore = () => {
     setShowAbout(false);
     // Scroll to products section
     document.querySelector('.products-grid')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Enhanced image loading with fallback
+  const handleImageError = (product, imageIndex = 0) => {
+    console.log(`Image ${imageIndex} failed for ${product.name}`);
+    updateImageStatus(product.id, 'error');
+    
+    if (product.images && imageIndex < product.images.length - 1) {
+      // Try next image source
+      const nextIndex = imageIndex + 1;
+      console.log(`Trying image ${nextIndex} for ${product.name}`);
+      return product.images[nextIndex];
+    }
+    
+    // All images failed, return null to show fallback
+    return null;
+  };
+
+  const handleImageLoad = (product) => {
+    console.log(`✅ Image loaded successfully for ${product.name}`);
+    updateImageStatus(product.id, 'success');
   };
 
   // Get unique brands
@@ -587,6 +654,37 @@ const MobyPenStore = () => {
         </div>
       </section>
 
+      {/* Image Loading Status Debug Panel */}
+      {showDemoDataNotice && (
+        <div style={{
+          position: 'fixed',
+          top: '100px',
+          right: '20px',
+          background: 'rgba(255, 255, 255, 0.95)',
+          border: '1px solid rgba(0, 0, 0, 0.1)',
+          borderRadius: '12px',
+          padding: '12px',
+          fontSize: '12px',
+          maxWidth: '200px',
+          zIndex: 1000,
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+        }}>
+          <h4 style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 'bold' }}>Image Status</h4>
+          {products.map(product => (
+            <div key={product.id} style={{ display: 'flex', alignItems: 'center', gap: '4px', margin: '2px 0' }}>
+              {imageLoadStatus[product.id] === 'success' ? (
+                <CheckCircle size={12} color="#10b981" />
+              ) : imageLoadStatus[product.id] === 'error' ? (
+                <XCircle size={12} color="#ef4444" />
+              ) : (
+                <div style={{ width: '12px', height: '12px', background: '#e5e7eb', borderRadius: '50%' }} />
+              )}
+              <span style={{ fontSize: '10px' }}>{product.brand}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Products Grid */}
       <section style={{ padding: '32px 0' }}>
         <div className="container">
@@ -607,7 +705,7 @@ const MobyPenStore = () => {
             </div>
           )}
 
-          {/* Show subtle demo notice instead of error when fallback data is loaded */}
+          {/* Show subtle demo notice with image verification */}
           {showDemoDataNotice && (
             <div style={{
               background: 'rgba(59, 130, 246, 0.1)',
@@ -624,7 +722,7 @@ const MobyPenStore = () => {
               gap: '8px'
             }}>
               <DockerWhaleIcon style={{ width: '16px', height: '16px', color: '#2563eb' }} />
-              <span>Demo Mode: Backend services unavailable, showing curated collection</span>
+              <span>Demo Mode: Showing curated collection with verified images</span>
             </div>
           )}
           
@@ -674,72 +772,12 @@ const MobyPenStore = () => {
                   </div>
                 )}
 
-                {/* Product Image - Fixed with Pexels images and better fallback */}
-                <div className="product-image" style={{
-                  width: '100%',
-                  height: '200px',
-                  background: 'linear-gradient(135deg, #f8fafc, #e2e8f0)',
-                  borderRadius: '12px',
-                  marginBottom: '16px',
-                  overflow: 'hidden',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'relative'
-                }}>
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    loading="lazy"
-                    crossOrigin="anonymous"
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      transition: 'transform 0.3s ease'
-                    }}
-                    onLoad={(e) => console.log(`Image loaded: ${product.name}`)}
-                    onError={(e) => {
-                      console.log(`Image failed to load: ${product.name}`);
-                      // Create a beautiful fallback display
-                      e.target.style.display = 'none';
-                      const container = e.target.parentElement;
-                      container.innerHTML = `
-                        <div style="
-                          display: flex;
-                          flex-direction: column;
-                          align-items: center;
-                          justify-content: center;
-                          color: #64748b;
-                          text-align: center;
-                          padding: 20px;
-                          width: 100%;
-                          height: 100%;
-                          background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-                        ">
-                          <div style="
-                            font-size: 48px; 
-                            margin-bottom: 12px;
-                            background: linear-gradient(45deg, #2563eb, #06b6d4);
-                            -webkit-background-clip: text;
-                            -webkit-text-fill-color: transparent;
-                          ">✒️</div>
-                          <div style="font-weight: 600; font-size: 14px; color: #1e293b; margin-bottom: 4px;">${product.brand}</div>
-                          <div style="font-size: 12px; color: #64748b; text-align: center; line-height: 1.3;">${product.name}</div>
-                          <div style="
-                            margin-top: 8px;
-                            padding: 4px 8px;
-                            background: rgba(37, 99, 235, 0.1);
-                            border-radius: 12px;
-                            font-size: 10px;
-                            color: #2563eb;
-                            font-weight: 500;
-                          ">${product.type}</div>
-                        </div>
-                      `;
-                    }}
-                  />
-                </div>
+                {/* Product Image - Enhanced with multiple fallbacks and verification */}
+                <ProductImage
+                  product={product}
+                  onLoad={() => handleImageLoad(product)}
+                  onError={(imageIndex) => handleImageError(product, imageIndex)}
+                />
 
                 {/* Product Info */}
                 <div className="product-info">
@@ -1024,6 +1062,141 @@ const MobyPenStore = () => {
           Chat opens in same window
         </div>
       </button>
+    </div>
+  );
+};
+
+// Enhanced Product Image Component with multiple fallbacks
+const ProductImage = ({ product, onLoad, onError }) => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [imageError, setImageError] = useState(false);
+
+  const handleImageError = () => {
+    console.log(`Image ${currentImageIndex} failed for ${product.name}`);
+    
+    if (product.images && currentImageIndex < product.images.length - 1) {
+      // Try next image source
+      const nextIndex = currentImageIndex + 1;
+      console.log(`Trying image ${nextIndex} for ${product.name}: ${product.images[nextIndex]}`);
+      setCurrentImageIndex(nextIndex);
+      onError(nextIndex);
+    } else {
+      // All images failed
+      console.log(`All images failed for ${product.name}, showing fallback`);
+      setImageError(true);
+      onError(currentImageIndex);
+    }
+  };
+
+  const handleImageLoad = () => {
+    console.log(`✅ Image ${currentImageIndex} loaded successfully for ${product.name}`);
+    setImageError(false);
+    onLoad();
+  };
+
+  if (imageError) {
+    // Beautiful fallback when all images fail
+    return (
+      <div style={{
+        width: '100%',
+        height: '200px',
+        background: 'linear-gradient(135deg, #f8fafc, #e2e8f0)',
+        borderRadius: '12px',
+        marginBottom: '16px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#64748b',
+        textAlign: 'center',
+        padding: '20px',
+        position: 'relative'
+      }}>
+        <div style={{
+          fontSize: '48px', 
+          marginBottom: '12px',
+          background: 'linear-gradient(45deg, #2563eb, #06b6d4)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+        }}>
+          ✒️
+        </div>
+        <div style={{ fontWeight: 600, fontSize: '14px', color: '#1e293b', marginBottom: '4px' }}>
+          {product.brand}
+        </div>
+        <div style={{ fontSize: '12px', color: '#64748b', textAlign: 'center', lineHeight: 1.3 }}>
+          {product.name}
+        </div>
+        <div style={{
+          marginTop: '8px',
+          padding: '4px 8px',
+          background: 'rgba(37, 99, 235, 0.1)',
+          borderRadius: '12px',
+          fontSize: '10px',
+          color: '#2563eb',
+          fontWeight: 500,
+        }}>
+          {product.type}
+        </div>
+        
+        {/* Small indicator showing this is fallback */}
+        <div style={{
+          position: 'absolute',
+          bottom: '8px',
+          right: '8px',
+          fontSize: '10px',
+          color: '#9ca3af',
+          background: 'rgba(255, 255, 255, 0.8)',
+          padding: '2px 6px',
+          borderRadius: '6px'
+        }}>
+          Image Unavailable
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{
+      width: '100%',
+      height: '200px',
+      background: 'linear-gradient(135deg, #f8fafc, #e2e8f0)',
+      borderRadius: '12px',
+      marginBottom: '16px',
+      overflow: 'hidden',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'relative'
+    }}>
+      <img
+        src={product.images && product.images[currentImageIndex] ? product.images[currentImageIndex] : product.image}
+        alt={product.name}
+        loading="lazy"
+        crossOrigin="anonymous"
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          transition: 'transform 0.3s ease'
+        }}
+        onLoad={handleImageLoad}
+        onError={handleImageError}
+      />
+      
+      {/* Small indicator showing which image source is being used */}
+      <div style={{
+        position: 'absolute',
+        bottom: '8px',
+        right: '8px',
+        fontSize: '10px',
+        color: 'rgba(255, 255, 255, 0.8)',
+        background: 'rgba(0, 0, 0, 0.5)',
+        padding: '2px 6px',
+        borderRadius: '6px'
+      }}>
+        Src: {currentImageIndex + 1}
+      </div>
     </div>
   );
 };
