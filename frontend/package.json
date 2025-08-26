@@ -1,21 +1,31 @@
 {
-  "name": "pen-shop-frontend",
-  "version": "1.0.0",
-  "description": "Moby Pen Shop E-commerce Frontend",
+  "name": "moby-pen-store-frontend",
+  "version": "2.0.0",
+  "description": "Moby Pen Store - Docker-powered E-commerce Frontend with Contemporary UX/UI",
   "private": true,
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "react-router-dom": "^6.3.0",
+    "react-router-dom": "^6.8.0",
     "axios": "^1.4.0",
-    "styled-components": "^5.3.11"
+    "lucide-react": "^0.263.1",
+    "framer-motion": "^10.16.0",
+    "tailwindcss": "^3.3.0",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.24"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.3",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/line-clamp": "^0.4.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "init-tailwind": "npx tailwindcss init -p"
   },
   "eslintConfig": {
     "extends": ["react-app"]
@@ -23,5 +33,14 @@
   "browserslist": {
     "production": [">0.2%", "not dead", "not op_mini all"],
     "development": ["last 1 chrome version", "last 1 firefox version"]
-  }
+  },
+  "keywords": [
+    "ecommerce",
+    "moby pen store",
+    "docker demo",
+    "react",
+    "tailwindcss",
+    "modern ui",
+    "containerized commerce"
+  ]
 }
