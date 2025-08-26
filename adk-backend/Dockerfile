@@ -1,27 +1,39 @@
-FROM golang:1.23-alpine AS builder
+FROM golang:1.21-alpine AS builder
 
 WORKDIR /app
 
-# Copy source code and go.mod
+# Install git (needed for go mod)
+RUN apk add --no-cache git
+
+# Copy go mod files
+COPY go.mod ./
+COPY go.sum ./
+
+# Download dependencies and tidy up
+RUN go mod download
+RUN go mod tidy
+
+# Copy source code
 COPY . .
 
-# Initialize and download dependencies
-RUN go mod tidy
-RUN go mod download
-
 # Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -o pen-shop-adk .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 
+# Runtime stage
 FROM alpine:latest
 
-RUN apk --no-cache add ca-certificates
-
+RUN apk --no-cache add ca-certificates curl
 WORKDIR /root/
 
-COPY --from=builder /app/pen-shop-adk .
-COPY --from=builder /app/entrypoint.sh .
-RUN chmod +x entrypoint.sh
+# Copy the binary
+COPY --from=builder /app/main .
 
+# Expose port
 EXPOSE 8000
 
-ENTRYPOINT ["./entrypoint.sh"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8000/api/health || exit 1
+
+# Run the binary
+CMD ["./main"]
