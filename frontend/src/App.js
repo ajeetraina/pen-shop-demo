@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, ShoppingCart, Star, Heart, Search, Filter, Menu, X } from 'lucide-react';
+import { Moon, Sun, ShoppingCart, Star, Heart, Search, Menu, X } from 'lucide-react';
 
-// Docker Whale Logo Component
-const DockerWhale = ({ className = "w-8 h-8" }) => (
+// Proper Docker Logo Component
+const DockerLogo = ({ className = "w-8 h-8" }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M13.5 10.5h2v1.5h-2v-1.5zm-3 0h2v1.5h-2v-1.5zm-3 0h2v1.5h-2v-1.5zm9 0h2v1.5h-2v-1.5zm-12 0h2v1.5h-2v-1.5zm3-3h2v1.5h-2V7.5zm3 0h2v1.5h-2V7.5zm3 0h2v1.5h-2V7.5zm-3-3h2v1.5h-2V4.5zm15 7.5c0-5.185-4.03-9.441-9.153-9.931a2.25 2.25 0 0 0-4.694 0C6.03 2.559 2 6.815 2 12a10 10 0 0 0 20 0z"/>
+    <path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.83.185.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m0 2.715h2.119a.185.185 0 00.185-.185v-1.888a.185.185 0 00-.185-.185h-2.119a.185.185 0 00-.185.185v1.888c0 .102.084.185.185.185m-2.98 0h2.12a.185.185 0 00.185-.185v-1.888a.185.185 0 00-.185-.185h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338 0-.676.033-.995.099-.1-3.537-2.101-4.381-2.906-4.381-.202 0-.407.033-.61.099-.486.17-.944.54-1.354 1.122-.728-.79-1.672-1.219-2.669-1.219-.674 0-1.317.244-1.842.68-.525-.435-1.146-.68-1.842-.68-.997 0-1.941.429-2.669 1.219-.41-.582-.868-.952-1.354-1.122-.203-.066-.408-.099-.61-.099-.805 0-2.806.844-2.906 4.381-.319-.066-.657-.099-.995-.099C1.139 9.38.532 9.839.467 9.89L0 10.297l.945.789c.4.33.809.442 1.238.442.486 0 .944-.17 1.354-.505.41.334.868.505 1.354.505.486 0 .944-.17 1.354-.505.41.334.868.505 1.354.505.486 0 .944-.17 1.354-.505.41.334.868.505 1.354.505.486 0 .944-.17 1.354-.505.41.334.868.505 1.354.505.486 0 .944-.17 1.354-.505.41.334.868.505 1.354.505.429 0 .838-.112 1.238-.442l.945-.789z"/>
   </svg>
 );
 
@@ -34,7 +34,7 @@ const MobyPenStore = () => {
         setError('Unable to load pen catalogue. Please try again later.');
         console.error('Catalogue error:', err);
         
-        // Fallback to mock data for demo purposes
+        // Fallback to mock data with real pen images
         const mockProducts = [
           {
             id: 1,
@@ -47,7 +47,8 @@ const MobyPenStore = () => {
             in_stock: true,
             rating: 4.8,
             reviews: 342,
-            category: "luxury"
+            category: "luxury",
+            image: "https://images.unsplash.com/photo-1565106430482-8f6e74349ca1?w=400&h=400&fit=crop&q=80"
           },
           {
             id: 2,
@@ -59,7 +60,8 @@ const MobyPenStore = () => {
             in_stock: true,
             rating: 4.6,
             reviews: 1284,
-            category: "everyday"
+            category: "everyday",
+            image: "https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?w=400&h=400&fit=crop&q=80"
           },
           {
             id: 3,
@@ -71,7 +73,8 @@ const MobyPenStore = () => {
             in_stock: false,
             rating: 4.7,
             reviews: 892,
-            category: "everyday"
+            category: "everyday",
+            image: "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=400&h=400&fit=crop&q=80"
           },
           {
             id: 4,
@@ -83,7 +86,8 @@ const MobyPenStore = () => {
             in_stock: true,
             rating: 4.5,
             reviews: 267,
-            category: "professional"
+            category: "professional",
+            image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=400&fit=crop&q=80"
           },
           {
             id: 5,
@@ -95,7 +99,8 @@ const MobyPenStore = () => {
             in_stock: true,
             rating: 4.4,
             reviews: 189,
-            category: "professional"
+            category: "professional",
+            image: "https://images.unsplash.com/photo-1592495981488-073262d6e4cf?w=400&h=400&fit=crop&q=80"
           },
           {
             id: 6,
@@ -107,7 +112,8 @@ const MobyPenStore = () => {
             in_stock: true,
             rating: 4.3,
             reviews: 445,
-            category: "professional"
+            category: "professional",
+            image: "https://images.unsplash.com/photo-1606113504104-2de841b5ba69?w=400&h=400&fit=crop&q=80"
           }
         ];
         setProducts(mockProducts);
@@ -157,12 +163,12 @@ const MobyPenStore = () => {
     return (
       <div className={`min-h-screen bg-gradient-to-br ${theme.bg} flex items-center justify-center`}>
         <div className="text-center">
-          <div className="relative">
+          <div className="relative mb-6">
             <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto"></div>
-            <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-cyan-400 rounded-full animate-spin animation-delay-150 mx-auto"></div>
+            <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-cyan-400 rounded-full animate-spin mx-auto" style={{animationDelay: '150ms'}}></div>
           </div>
-          <div className="mt-4 flex items-center justify-center space-x-2">
-            <DockerWhale className="w-6 h-6 text-blue-600" />
+          <div className="flex items-center justify-center space-x-3">
+            <DockerLogo className="w-8 h-8 text-blue-600" />
             <p className={`text-xl font-medium ${theme.text}`}>Loading Moby's pen collection...</p>
           </div>
         </div>
@@ -178,46 +184,48 @@ const MobyPenStore = () => {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg">
-                <DockerWhale className="w-8 h-8 text-white" />
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg">
+                <DockerLogo className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className={`text-2xl font-bold bg-gradient-to-r ${theme.accent} bg-clip-text text-transparent`}>
+                <h1 className={`text-xl font-bold bg-gradient-to-r ${theme.accent} bg-clip-text text-transparent`}>
                   Moby Pen Store
                 </h1>
-                <p className={`text-xs ${theme.textSecondary}`}>Powered by Docker</p>
+                <p className={`text-xs ${theme.textSecondary}`}>Premium Writing Instruments</p>
               </div>
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <a href="#" className={`${theme.text} hover:text-blue-600 transition-colors font-medium`}>Collection</a>
-              <a href="#" className={`${theme.text} hover:text-blue-600 transition-colors font-medium`}>Brands</a>
-              <a href="#" className={`${theme.text} hover:text-blue-600 transition-colors font-medium`}>Docker Demo</a>
-              <a href="#" className={`${theme.text} hover:text-blue-600 transition-colors font-medium`}>About</a>
+            <nav className="hidden md:flex items-center space-x-6">
+              <a href="#" className={`${theme.text} hover:text-blue-600 transition-colors font-medium text-sm`}>Collection</a>
+              <a href="#" className={`${theme.text} hover:text-blue-600 transition-colors font-medium text-sm`}>Brands</a>
+              <a href="#" className={`${theme.text} hover:text-blue-600 transition-colors font-medium text-sm`}>New Arrivals</a>
+              <a href="#" className={`${theme.text} hover:text-blue-600 transition-colors font-medium text-sm`}>About</a>
             </nav>
 
             {/* Controls */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
               <button
                 onClick={toggleDarkMode}
                 className={`p-2 rounded-xl ${theme.cardBg} border hover:scale-105 transition-all duration-200`}
               >
-                {darkMode ? <Sun className="w-5 h-5 text-yellow-500" /> : <Moon className="w-5 h-5 text-blue-600" />}
+                {darkMode ? <Sun className="w-4 h-4 text-yellow-500" /> : <Moon className="w-4 h-4 text-blue-600" />}
               </button>
               
               <button className={`p-2 rounded-xl ${theme.cardBg} border hover:scale-105 transition-all duration-200 relative`}>
-                <ShoppingCart className={`w-5 h-5 ${theme.text}`} />
-                <span className="absolute -top-2 -right-2 w-5 h-5 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center">
-                  {favorites.size}
-                </span>
+                <ShoppingCart className={`w-4 h-4 ${theme.text}`} />
+                {favorites.size > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center text-[10px]">
+                    {favorites.size}
+                  </span>
+                )}
               </button>
 
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className={`md:hidden p-2 rounded-xl ${theme.cardBg} border`}
               >
-                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
               </button>
             </div>
           </div>
@@ -228,54 +236,52 @@ const MobyPenStore = () => {
       {mobileMenuOpen && (
         <div className={`md:hidden ${theme.cardBg} border-b shadow-lg`}>
           <div className="max-w-7xl mx-auto px-4 py-4 space-y-2">
-            <a href="#" className={`block py-2 ${theme.text} hover:text-blue-600`}>Collection</a>
-            <a href="#" className={`block py-2 ${theme.text} hover:text-blue-600`}>Brands</a>
-            <a href="#" className={`block py-2 ${theme.text} hover:text-blue-600`}>Docker Demo</a>
-            <a href="#" className={`block py-2 ${theme.text} hover:text-blue-600`}>About</a>
+            <a href="#" className={`block py-2 ${theme.text} hover:text-blue-600 text-sm`}>Collection</a>
+            <a href="#" className={`block py-2 ${theme.text} hover:text-blue-600 text-sm`}>Brands</a>
+            <a href="#" className={`block py-2 ${theme.text} hover:text-blue-600 text-sm`}>New Arrivals</a>
+            <a href="#" className={`block py-2 ${theme.text} hover:text-blue-600 text-sm`}>About</a>
           </div>
         </div>
       )}
 
       {/* Hero Section */}
-      <section className="relative py-20 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="flex items-center justify-center mb-6">
-            <DockerWhale className={`w-16 h-16 text-blue-600 mr-4`} />
-            <div>
-              <h2 className={`text-5xl md:text-7xl font-bold ${theme.text} leading-tight`}>
-                Moby's
-                <span className={`block bg-gradient-to-r ${theme.accent} bg-clip-text text-transparent`}>
-                  Pen Store
-                </span>
+      <section className="relative py-12 overflow-hidden">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="mb-8">
+            <div className="mb-6">
+              <h2 className={`text-4xl md:text-5xl font-bold ${theme.text} leading-tight mb-2`}>
+                Welcome to Moby Pen Store
               </h2>
+              <p className={`text-sm ${theme.textSecondary}`}>Curated by Docker</p>
             </div>
+            
+            <p className={`text-lg md:text-xl ${theme.textSecondary} mb-4 max-w-2xl mx-auto`}>
+              Discover premium writing instruments crafted for excellence
+            </p>
+            <p className={`text-sm ${theme.textSecondary} mb-8 opacity-80`}>
+              ✒️ Luxury Pens • Professional Tools • Everyday Essentials
+            </p>
           </div>
-          <p className={`text-xl md:text-2xl ${theme.textSecondary} mb-4 max-w-2xl mx-auto`}>
-            Premium writing instruments in a containerized shopping experience
-          </p>
-          <p className={`text-lg ${theme.textSecondary} mb-8 max-w-xl mx-auto opacity-80`}>
-            🐳 Powered by Docker • Scalable • Reliable • Modern
-          </p>
           
           {/* Search Bar */}
-          <div className="relative max-w-md mx-auto mb-8">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <div className="relative max-w-md mx-auto mb-6">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
               type="text"
               placeholder="Search pens, brands..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full pl-12 pr-4 py-4 rounded-2xl ${theme.cardBg} border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-lg`}
+              className={`w-full pl-10 pr-4 py-3 rounded-2xl ${theme.cardBg} border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all`}
             />
           </div>
 
           {/* Category Filter */}
-          <div className="flex justify-center space-x-2 mb-8 flex-wrap gap-2">
+          <div className="flex justify-center flex-wrap gap-2 mb-8">
             {categories.map(category => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-2 rounded-full transition-all capitalize font-medium ${
+                className={`px-4 py-2 rounded-full transition-all capitalize font-medium text-sm ${
                   selectedCategory === category
                     ? `bg-gradient-to-r ${theme.accent} text-white shadow-lg`
                     : `${theme.cardBg} border ${theme.text} hover:scale-105`
@@ -289,95 +295,96 @@ const MobyPenStore = () => {
       </section>
 
       {/* Products Grid */}
-      <section className="py-12">
+      <section className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {error && (
-            <div className={`text-center py-8 mb-8 ${theme.cardBg} border rounded-2xl`}>
-              <p className={`text-lg ${theme.textSecondary}`}>
+            <div className={`text-center py-6 mb-6 ${theme.cardBg} border rounded-2xl`}>
+              <p className={`text-sm ${theme.textSecondary}`}>
                 {error}
               </p>
-              <p className={`text-sm ${theme.textSecondary} mt-2`}>
+              <p className={`text-xs ${theme.textSecondary} mt-1`}>
                 Showing demo products below
               </p>
             </div>
           )}
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredProducts.map(product => (
               <div
                 key={product.id}
-                className={`group ${theme.cardBg} border rounded-3xl p-6 hover:scale-105 transition-all duration-300 hover:shadow-2xl relative overflow-hidden`}
+                className={`group ${theme.cardBg} border rounded-2xl p-5 hover:scale-105 transition-all duration-300 hover:shadow-2xl relative overflow-hidden`}
               >
-                {/* Docker-themed decoration */}
-                <div className="absolute top-2 left-2 opacity-10">
-                  <DockerWhale className="w-8 h-8 text-blue-500" />
-                </div>
-
                 {/* Favorite Button */}
                 <button
                   onClick={() => toggleFavorite(product.id)}
-                  className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-all"
+                  className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-all"
                 >
                   <Heart
-                    className={`w-5 h-5 ${favorites.has(product.id) ? 'text-red-500 fill-current' : 'text-gray-400'}`}
+                    className={`w-4 h-4 ${favorites.has(product.id) ? 'text-red-500 fill-current' : 'text-gray-400'}`}
                   />
                 </button>
 
                 {/* Sale Badge */}
                 {product.originalPrice && (
-                  <div className="absolute top-4 left-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                    Docker Sale
+                  <div className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-pink-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                    Sale
                   </div>
                 )}
 
-                {/* Product Image Placeholder */}
-                <div className="relative h-48 mb-6 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center">
-                  <div className="text-6xl opacity-50">🖊️</div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                {/* Product Image */}
+                <div className="relative h-48 mb-4 rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+                  <img
+                    src={product.image || "https://images.unsplash.com/photo-1565106430482-8f6e74349ca1?w=400&h=400&fit=crop&q=80"}
+                    alt={product.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 </div>
 
                 {/* Product Info */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className={`text-sm font-medium px-3 py-1 rounded-full ${theme.cardBg} ${theme.textSecondary}`}>
+                    <span className={`text-xs font-medium px-2 py-1 rounded-full ${theme.cardBg} ${theme.textSecondary}`}>
                       {product.brand}
                     </span>
                     {product.rating && (
                       <div className="flex items-center space-x-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className={`text-sm ${theme.textSecondary}`}>{product.rating}</span>
+                        <Star className="w-3 h-3 text-yellow-500 fill-current" />
+                        <span className={`text-xs ${theme.textSecondary}`}>{product.rating}</span>
                         <span className={`text-xs ${theme.textSecondary}`}>({product.reviews || 0})</span>
                       </div>
                     )}
                   </div>
 
-                  <h3 className={`text-xl font-bold ${theme.text} line-clamp-2`}>{product.name}</h3>
+                  <h3 className={`text-lg font-bold ${theme.text} line-clamp-2`}>{product.name}</h3>
+                  <p className={`text-xs ${theme.textSecondary}`}>{product.type}</p>
                   
-                  <p className={`text-sm ${theme.textSecondary} line-clamp-2`}>{product.description}</p>
+                  <p className={`text-xs ${theme.textSecondary} line-clamp-2`}>{product.description}</p>
 
                   <div className="flex items-center space-x-2">
-                    <span className={`text-2xl font-bold ${theme.text}`}>${product.price.toFixed(2)}</span>
+                    <span className={`text-xl font-bold ${theme.text}`}>${product.price.toFixed(2)}</span>
                     {product.originalPrice && (
-                      <span className="text-lg text-gray-400 line-through">${product.originalPrice.toFixed(2)}</span>
+                      <span className="text-sm text-gray-400 line-through">${product.originalPrice.toFixed(2)}</span>
                     )}
                   </div>
 
                   {/* Stock Status */}
-                  <div className={`flex items-center space-x-2 text-sm ${product.in_stock ? 'text-green-600' : 'text-red-500'}`}>
-                    <div className={`w-2 h-2 rounded-full ${product.in_stock ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                  <div className={`flex items-center space-x-1 text-xs ${product.in_stock ? 'text-green-600' : 'text-red-500'}`}>
+                    <div className={`w-1.5 h-1.5 rounded-full ${product.in_stock ? 'bg-green-500' : 'bg-red-500'}`}></div>
                     <span>{product.in_stock ? 'In Stock' : 'Out of Stock'}</span>
                   </div>
 
                   {/* Add to Cart Button */}
                   <button
                     disabled={!product.in_stock}
-                    className={`w-full py-3 rounded-2xl font-medium transition-all duration-200 flex items-center justify-center space-x-2 ${
+                    className={`w-full py-2.5 rounded-xl font-medium transition-all duration-200 flex items-center justify-center space-x-2 text-sm ${
                       product.in_stock
                         ? `${theme.button} text-white hover:scale-105 active:scale-95 shadow-lg`
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }`}
                   >
-                    <ShoppingCart className="w-5 h-5" />
+                    <ShoppingCart className="w-4 h-4" />
                     <span>{product.in_stock ? 'Add to Cart' : 'Out of Stock'}</span>
                   </button>
                 </div>
@@ -386,92 +393,79 @@ const MobyPenStore = () => {
           </div>
 
           {filteredProducts.length === 0 && (
-            <div className="text-center py-20">
-              <div className="w-20 h-20 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
-                <Search className="w-10 h-10 text-gray-400" />
+            <div className="text-center py-16">
+              <div className="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
+                <Search className="w-8 h-8 text-gray-400" />
               </div>
-              <p className={`text-xl ${theme.textSecondary}`}>No pens found matching your criteria</p>
+              <p className={`text-lg ${theme.textSecondary}`}>No pens found matching your criteria</p>
               <p className={`text-sm ${theme.textSecondary} mt-2`}>Try adjusting your search or category filter</p>
             </div>
           )}
         </div>
       </section>
 
-      {/* Docker Info Section */}
-      <section className={`py-16 ${theme.cardBg} border-t`}>
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <div className="flex items-center justify-center mb-6">
-            <DockerWhale className="w-12 h-12 text-blue-600 mr-4" />
-            <h3 className={`text-3xl font-bold ${theme.text}`}>Containerized Commerce</h3>
-          </div>
-          <p className={`text-lg ${theme.textSecondary} mb-8 max-w-2xl mx-auto`}>
-            This Moby Pen Store is a demonstration of modern containerized e-commerce built with Docker. 
-            Experience seamless scaling, reliable deployment, and consistent performance across all environments.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className={`w-16 h-16 ${theme.cardBg} rounded-2xl flex items-center justify-center mx-auto mb-4 border`}>
-                <span className="text-2xl">🚀</span>
-              </div>
-              <h4 className={`font-bold ${theme.text} mb-2`}>Scalable</h4>
-              <p className={`text-sm ${theme.textSecondary}`}>Horizontally scalable architecture</p>
-            </div>
-            <div className="text-center">
-              <div className={`w-16 h-16 ${theme.cardBg} rounded-2xl flex items-center justify-center mx-auto mb-4 border`}>
-                <span className="text-2xl">🛡️</span>
-              </div>
-              <h4 className={`font-bold ${theme.text} mb-2`}>Reliable</h4>
-              <p className={`text-sm ${theme.textSecondary}`}>Container isolation and security</p>
-            </div>
-            <div className="text-center">
-              <div className={`w-16 h-16 ${theme.cardBg} rounded-2xl flex items-center justify-center mx-auto mb-4 border`}>
-                <span className="text-2xl">⚡</span>
-              </div>
-              <h4 className={`font-bold ${theme.text} mb-2`}>Fast</h4>
-              <p className={`text-sm ${theme.textSecondary}`}>Optimized container performance</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer className={`mt-20 ${theme.cardBg} border-t`}>
+      <footer className={`mt-16 ${theme.cardBg} border-t`}>
         <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="text-center">
-            <div className="flex items-center justify-center space-x-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg">
-                <DockerWhale className="w-8 h-8 text-white" />
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {/* Brand */}
+            <div className="md:col-span-2">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg flex items-center justify-center shadow-lg">
+                  <DockerLogo className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className={`text-lg font-bold bg-gradient-to-r ${theme.accent} bg-clip-text text-transparent`}>
+                    Moby Pen Store
+                  </h3>
+                  <p className={`text-xs ${theme.textSecondary}`}>Premium Writing Instruments</p>
+                </div>
               </div>
-              <div>
-                <h3 className={`text-2xl font-bold bg-gradient-to-r ${theme.accent} bg-clip-text text-transparent`}>
-                  Moby Pen Store
-                </h3>
-                <p className={`text-xs ${theme.textSecondary}`}>Powered by Docker</p>
+              <p className={`text-sm ${theme.textSecondary} mb-4 max-w-md`}>
+                Discover the finest collection of writing instruments from renowned brands worldwide. 
+                Quality craftsmanship meets modern technology.
+              </p>
+            </div>
+
+            {/* Quick Links */}
+            <div>
+              <h4 className={`font-bold ${theme.text} mb-3 text-sm`}>Quick Links</h4>
+              <div className="space-y-2">
+                <a href="#" className={`block text-xs ${theme.textSecondary} hover:text-blue-600 transition-colors`}>Our Collection</a>
+                <a href="#" className={`block text-xs ${theme.textSecondary} hover:text-blue-600 transition-colors`}>Brand Partners</a>
+                <a href="#" className={`block text-xs ${theme.textSecondary} hover:text-blue-600 transition-colors`}>Gift Cards</a>
+                <a href="#" className={`block text-xs ${theme.textSecondary} hover:text-blue-600 transition-colors`}>Care Guide</a>
               </div>
             </div>
-            <p className={`${theme.textSecondary} mb-6`}>
-              A Docker demonstration project showcasing modern e-commerce architecture
-            </p>
-            <div className="flex justify-center space-x-6 text-sm mb-4">
-              <a href="#" className={`${theme.textSecondary} hover:text-blue-600 transition-colors`}>Docker Hub</a>
-              <a href="#" className={`${theme.textSecondary} hover:text-blue-600 transition-colors`}>GitHub</a>
-              <a href="#" className={`${theme.textSecondary} hover:text-blue-600 transition-colors`}>Documentation</a>
+
+            {/* Support */}
+            <div>
+              <h4 className={`font-bold ${theme.text} mb-3 text-sm`}>Support</h4>
+              <div className="space-y-2">
+                <a href="#" className={`block text-xs ${theme.textSecondary} hover:text-blue-600 transition-colors`}>Contact Us</a>
+                <a href="#" className={`block text-xs ${theme.textSecondary} hover:text-blue-600 transition-colors`}>Shipping Info</a>
+                <a href="#" className={`block text-xs ${theme.textSecondary} hover:text-blue-600 transition-colors`}>Returns</a>
+                <a href="#" className={`block text-xs ${theme.textSecondary} hover:text-blue-600 transition-colors`}>FAQ</a>
+              </div>
             </div>
+          </div>
+
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-6 mt-8 text-center">
             <p className={`text-xs ${theme.textSecondary}`}>
-              © 2024 Moby Pen Store • Docker Demo Project • All rights reserved.
+              © 2024 Moby Pen Store • Powered by Docker • All rights reserved.
             </p>
           </div>
         </div>
       </footer>
 
-      {/* Floating AI Assistant with Docker theme */}
+      {/* Floating AI Assistant */}
       <button
         onClick={openAIAssistant}
-        className="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full shadow-2xl hover:scale-110 transition-all duration-300 flex items-center justify-center group"
+        className="fixed bottom-6 right-6 w-12 h-12 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full shadow-2xl hover:scale-110 transition-all duration-300 flex items-center justify-center group"
       >
-        <span className="text-2xl">🤖</span>
-        <div className="absolute -top-12 right-0 bg-black text-white px-3 py-1 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-          Docker AI Assistant
+        <span className="text-lg">💬</span>
+        <div className="absolute -top-10 right-0 bg-black text-white px-2 py-1 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+          Pen Expert Chat
         </div>
       </button>
     </div>
