@@ -141,6 +141,7 @@ const MobyPenStore = () => {
   }, []);
 
   const toggleDarkMode = () => setDarkMode(!darkMode);
+  
   const toggleFavorite = (id) => {
     const newFavorites = new Set(favorites);
     if (newFavorites.has(id)) {
@@ -151,18 +152,38 @@ const MobyPenStore = () => {
     setFavorites(newFavorites);
   };
 
+  // Enhanced search functionality - make sure it checks all relevant fields
   const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         product.brand.toLowerCase().includes(searchQuery.toLowerCase());
+    if (!product) return false;
+    
+    const searchLower = searchQuery.toLowerCase().trim();
+    const matchesSearch = searchLower === '' || 
+                         (product.name && product.name.toLowerCase().includes(searchLower)) ||
+                         (product.brand && product.brand.toLowerCase().includes(searchLower)) ||
+                         (product.type && product.type.toLowerCase().includes(searchLower)) ||
+                         (product.description && product.description.toLowerCase().includes(searchLower));
+    
     const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
   const categories = ['all', 'luxury', 'everyday', 'professional'];
 
-  // Fix: Open chatbot in same page instead of new tab
+  // Fix: Open chatbot in same tab without completely navigating away
   const openAIAssistant = () => {
-    window.location.href = 'http://localhost:3000';
+    // Create a new window/tab and focus on it, but keep the original page
+    const chatWindow = window.open('http://localhost:3000', '_blank', 'noopener,noreferrer');
+    if (chatWindow) {
+      chatWindow.focus();
+    } else {
+      // Fallback if popup is blocked - open in same tab
+      window.open('http://localhost:3000', '_self');
+    }
+  };
+
+  // Clear search function
+  const clearSearch = () => {
+    setSearchQuery('');
   };
 
   if (loading) {
@@ -303,24 +324,60 @@ const MobyPenStore = () => {
             </p>
           </div>
           
-          {/* Search Bar */}
+          {/* Enhanced Search Bar */}
           <div className="search-container">
             <Search className="search-icon" size={16} />
             <input
               type="text"
-              placeholder="Search pens, brands..."
+              placeholder="Search pens, brands, types..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                console.log('Search query changed:', e.target.value); // Debug log
+                setSearchQuery(e.target.value);
+              }}
               className="search-input"
             />
+            {searchQuery && (
+              <button 
+                onClick={clearSearch}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  color: '#9ca3af',
+                  cursor: 'pointer',
+                  padding: '4px'
+                }}
+              >
+                <X size={14} />
+              </button>
+            )}
           </div>
+
+          {/* Show current search results count */}
+          {searchQuery && (
+            <div style={{ 
+              textAlign: 'center', 
+              fontSize: '14px', 
+              color: '#64748b', 
+              margin: '8px 0' 
+            }}>
+              Found {filteredProducts.length} pen{filteredProducts.length !== 1 ? 's' : ''} matching "{searchQuery}"
+            </div>
+          )}
 
           {/* Category Filter */}
           <div className="categories">
             {categories.map(category => (
               <button
                 key={category}
-                onClick={() => setSelectedCategory(category)}
+                onClick={() => {
+                  console.log('Category selected:', category); // Debug log
+                  setSelectedCategory(category);
+                }}
                 className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
               >
                 {category}
@@ -360,6 +417,16 @@ const MobyPenStore = () => {
               <p>{error}</p>
             </div>
           )}
+          
+          {/* Debug info - remove in production */}
+          <div style={{ 
+            fontSize: '12px', 
+            color: '#64748b', 
+            marginBottom: '16px',
+            textAlign: 'center'
+          }}>
+            Total products: {products.length} | Filtered: {filteredProducts.length} | Search: "{searchQuery}" | Category: {selectedCategory}
+          </div>
           
           <div className="products-grid">
             {filteredProducts.map(product => (
@@ -438,7 +505,7 @@ const MobyPenStore = () => {
             ))}
           </div>
 
-          {filteredProducts.length === 0 && (
+          {filteredProducts.length === 0 && products.length > 0 && (
             <div style={{ textAlign: 'center', padding: '64px 0' }}>
               <div style={{ 
                 width: '64px', 
@@ -453,7 +520,26 @@ const MobyPenStore = () => {
                 <Search size={32} color="#9ca3af" />
               </div>
               <p style={{ fontSize: '18px', color: '#64748b' }}>No pens found matching your criteria</p>
-              <p style={{ fontSize: '14px', color: '#64748b', marginTop: '8px' }}>Try adjusting your search or category filter</p>
+              <p style={{ fontSize: '14px', color: '#64748b', marginTop: '8px' }}>
+                {searchQuery ? `No results for "${searchQuery}"` : 'Try adjusting your category filter'}
+              </p>
+              <button 
+                onClick={() => {
+                  setSearchQuery('');
+                  setSelectedCategory('all');
+                }}
+                style={{
+                  marginTop: '16px',
+                  padding: '8px 16px',
+                  background: '#2563eb',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer'
+                }}
+              >
+                Clear all filters
+              </button>
             </div>
           )}
         </div>
