@@ -4,8 +4,12 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 
 # Copy package files
-COPY package.json ./
+COPY package*.json ./
 RUN npm install
+
+# Copy configuration files
+COPY tailwind.config.js ./
+COPY postcss.config.js ./
 
 # Copy source code
 COPY src/ ./src/
