@@ -54,7 +54,7 @@ const MobyPenStore = () => {
       } catch (err) {
         console.error('Catalogue error:', err);
         
-        // Fallback to mock data with better pen images
+        // Fallback to mock data with high-quality pen images
         const mockProducts = [
           {
             id: 1,
@@ -68,7 +68,7 @@ const MobyPenStore = () => {
             rating: 4.8,
             reviews: 342,
             category: "luxury",
-            image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=400&fit=crop&q=80"
+            image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&h=600&fit=crop&q=80&auto=format"
           },
           {
             id: 2,
@@ -81,7 +81,7 @@ const MobyPenStore = () => {
             rating: 4.6,
             reviews: 1284,
             category: "everyday",
-            image: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=400&h=400&fit=crop&q=80"
+            image: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&h=600&fit=crop&q=80&auto=format"
           },
           {
             id: 3,
@@ -94,7 +94,7 @@ const MobyPenStore = () => {
             rating: 4.7,
             reviews: 892,
             category: "everyday",
-            image: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=400&fit=crop&q=80"
+            image: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=600&h=600&fit=crop&q=80&auto=format"
           },
           {
             id: 4,
@@ -107,7 +107,7 @@ const MobyPenStore = () => {
             rating: 4.5,
             reviews: 267,
             category: "professional",
-            image: "https://images.unsplash.com/photo-1625916674103-85be0c8e0d2e?w=400&h=400&fit=crop&q=80"
+            image: "https://images.unsplash.com/photo-1625916674103-85be0c8e0d2e?w=600&h=600&fit=crop&q=80&auto=format"
           },
           {
             id: 5,
@@ -120,7 +120,7 @@ const MobyPenStore = () => {
             rating: 4.4,
             reviews: 189,
             category: "professional",
-            image: "https://images.unsplash.com/photo-1508057198894-247b23fe5ade?w=400&h=400&fit=crop&q=80"
+            image: "https://images.unsplash.com/photo-1508057198894-247b23fe5ade?w=600&h=600&fit=crop&q=80&auto=format"
           },
           {
             id: 6,
@@ -133,7 +133,7 @@ const MobyPenStore = () => {
             rating: 4.3,
             reviews: 445,
             category: "professional",
-            image: "https://images.unsplash.com/photo-1542013936693-884638332954?w=400&h=400&fit=crop&q=80"
+            image: "https://images.unsplash.com/photo-1542013936693-884638332954?w=600&h=600&fit=crop&q=80&auto=format"
           }
         ];
         setProducts(mockProducts);
@@ -430,7 +430,7 @@ const MobyPenStore = () => {
               gap: '8px'
             }}>
               <DockerWhaleIcon style={{ width: '16px', height: '16px', color: '#2563eb' }} />
-              <span>Demo Mode: Showcasing our curated pen collection</span>
+              <span>Demo Mode: Backend services unavailable, showing curated collection</span>
             </div>
           )}
           
@@ -463,7 +463,7 @@ const MobyPenStore = () => {
                   </div>
                 )}
 
-                {/* Product Image - Fixed with better images and styling */}
+                {/* Product Image - High quality pen images */}
                 <div className="product-image" style={{
                   width: '100%',
                   height: '200px',
@@ -487,22 +487,27 @@ const MobyPenStore = () => {
                       transition: 'transform 0.3s ease'
                     }}
                     onError={(e) => {
+                      // Fallback to pen icon if image fails
                       e.target.style.display = 'none';
-                      e.target.parentElement.innerHTML = `
-                        <div style="
-                          display: flex;
-                          flex-direction: column;
-                          align-items: center;
-                          justify-content: center;
-                          color: #64748b;
-                          font-size: 14px;
-                          text-align: center;
-                          padding: 20px;
-                        ">
-                          <div style="font-size: 48px; margin-bottom: 8px;">✒️</div>
-                          <div>${product.name}</div>
-                        </div>
+                      const fallback = document.createElement('div');
+                      fallback.style.cssText = `
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        color: #64748b;
+                        font-size: 14px;
+                        text-align: center;
+                        padding: 20px;
+                        width: 100%;
+                        height: 100%;
                       `;
+                      fallback.innerHTML = `
+                        <div style="font-size: 48px; margin-bottom: 8px;">🖋️</div>
+                        <div style="font-weight: 500;">${product.brand}</div>
+                        <div>${product.name}</div>
+                      `;
+                      e.target.parentElement.appendChild(fallback);
                     }}
                   />
                 </div>
