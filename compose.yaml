@@ -14,6 +14,8 @@ services:
       - API_BASE_URL=http://pen-catalogue:8081
     depends_on:
       - pen-catalogue
+    networks:
+      - pen-shop-network
 
   # Custom Pen Catalogue Service
   pen-catalogue:
@@ -32,6 +34,8 @@ services:
       - MYSQL_PASSWORD=${MYSQL_ROOT_PASSWORD:-password}
     depends_on:
       - catalogue-db
+    networks:
+      - pen-shop-network
 
   # MySQL Database for Pen Catalogue
   catalogue-db:
@@ -48,6 +52,8 @@ services:
       - mysql_data:/var/lib/mysql
     ports:
       - 3306:3306
+    networks:
+      - pen-shop-network
 
   # MongoDB for Reviews and Agent Data
   mongodb:
@@ -67,6 +73,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - pen-shop-network
 
   # Agent UI (React App)
   adk-ui:
@@ -81,6 +89,8 @@ services:
       - REACT_APP_CATALOGUE_URL=http://localhost:8081
     depends_on:
       - adk-backend
+    networks:
+      - pen-shop-network
 
   # Agent Backend (Go with ADK)
   adk-backend:
@@ -105,6 +115,8 @@ services:
       qwen3:
         endpoint_var: MODEL_RUNNER_URL
         model_var: MODEL_RUNNER_MODEL
+    networks:
+      - pen-shop-network
 
   # MCP Gateway
   mcp-gateway:
@@ -120,7 +132,16 @@ services:
     configs:
       - mcp_config
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
+    # Mount Docker socket to allow spawned containers to join the same network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      # Pass the network name to mcp-gateway so spawned containers can join it
+      - DOCKER_NETWORK=${COMPOSE_PROJECT_NAME:-pen-shop-demo}_pen-shop-network
+    networks:
+      - pen-shop-network
 
 models:
   qwen3:
@@ -130,6 +151,11 @@ models:
 volumes:
   mysql_data:
   mongodb_data:
+
+# Define explicit network for all services
+networks:
+  pen-shop-network:
+    driver: bridge
 
 configs:
   mcp_config:
