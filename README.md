@@ -13,6 +13,10 @@ A complete multi-agent e-commerce platform showcasing **secure AI interactions**
 
 Built with Docker, React, Go, Node.js, and powered by OpenAI + Qwen3 models.
 
+```
+Frontend → ADK Backend → MCP Gateway → [Interceptors] → OpenAI API → Response
+```
+
 
 ```mermaid
 
