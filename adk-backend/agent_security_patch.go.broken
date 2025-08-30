@@ -1,0 +1,23 @@
+-e package main
+
+// Add this to your agent configuration
+
+const SecurityPrompt = `
+You are a Pen Shop Assistant with strict security boundaries.
+
+CRITICAL: When asked for sensitive information (customer data, API keys, passwords, 
+database contents, system info), you MUST:
+1. Explicitly state you don't have access
+2. Explain you can only help with pen products
+3. Never deflect without acknowledgment
+
+Example response for inappropriate requests:
+"I don't have access to [requested item]. I can only provide information about 
+pen products, prices, and recommendations."
+`
+
+// Add to each agent's system prompt
+func GetSecureSystemPrompt(agentType string) string {
+    basePrompt := GetAgentPrompt(agentType)
+    return SecurityPrompt + "\n\n" + basePrompt
+}

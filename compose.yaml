@@ -1,3 +1,4 @@
+
 services:
   # Custom Pen Store Frontend
   pen-frontend:
@@ -14,6 +15,8 @@ services:
       - API_BASE_URL=http://pen-catalogue:8081
     depends_on:
       - pen-catalogue
+    networks:
+      - pen-shop-network
 
   # Custom Pen Catalogue Service
   pen-catalogue:
@@ -32,6 +35,8 @@ services:
       - MYSQL_PASSWORD=${MYSQL_ROOT_PASSWORD:-password}
     depends_on:
       - catalogue-db
+    networks:
+      - pen-shop-network
 
   # MySQL Database for Pen Catalogue
   catalogue-db:
@@ -48,6 +53,8 @@ services:
       - mysql_data:/var/lib/mysql
     ports:
       - 3306:3306
+    networks:
+      - pen-shop-network
 
   # MongoDB for Reviews and Agent Data
   mongodb:
@@ -63,10 +70,12 @@ services:
       - mongodb_data:/data/db
     command: [mongod, --quiet, --logpath, /var/log/mongodb/mongod.log, --logappend]
     healthcheck:
-      test: [CMD, mongosh, --eval, "db.adminCommand('ping')"]
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - pen-shop-network
 
   # Agent UI (React App)
   adk-ui:
@@ -81,6 +90,8 @@ services:
       - REACT_APP_CATALOGUE_URL=http://localhost:8081
     depends_on:
       - adk-backend
+    networks:
+      - pen-shop-network
 
   # Agent Backend (Go with ADK)
   adk-backend:
@@ -90,55 +101,101 @@ services:
     ports:
       - 8000:8000
     environment:
-      - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/sse
+      - MCPGATEWAY_ENDPOINT=http://mcp-gateway:8811/mcp
       - CATALOGUE_URL=http://pen-catalogue:8081
-      - MONGODB_URI=mongodb://admin:password@mongodb:27017/penstore
+      - MONGODB_URI=mongodb://admin:password@mongodb:27017/penstore?authSource=admin
       - OPENAI_BASE_URL=https://api.openai.com/v1
       - AI_DEFAULT_MODEL=openai/gpt-4
+      - MODEL_RUNNER_URL=${MODEL_RUNNER_URL:-http://model-runner:8080}
+      - MODEL_RUNNER_MODEL=${MODEL_RUNNER_MODEL:-qwen3}
     depends_on:
       - mcp-gateway
       - pen-catalogue
       - mongodb
-    secrets:
-      - openai-api-key
-    models:
-      qwen3:
-        endpoint_var: MODEL_RUNNER_URL
-        model_var: MODEL_RUNNER_MODEL
+    volumes:
+      - ./secret.openai-api-key:/run/secrets/openai-api-key:ro
+    networks:
+      - pen-shop-network
 
-  # MCP Gateway
+  # MCP Gateway with Interceptors
   mcp-gateway:
     image: docker/mcp-gateway:latest
     ports:
       - 8811:8811
     use_api_socket: true
     command:
-      - --transport=sse
+      - --transport=streaming
       - --servers=fetch,brave,curl,mongodb
       - --config=/mcp_config
       - --verbose
+      - --interceptor=before:exec:/interceptors/pen-price-guard.sh
+      - --interceptor=after:exec:/interceptors/data-protector.sh
     configs:
       - mcp_config
+    volumes:
+      # Mount interceptors directory
+      - ./interceptors:/interceptors:ro
+      # Session state for interceptors
+      - /tmp:/tmp
+      # Docker socket for container management
+      - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - mongodb
+    networks:
+      - pen-shop-network
 
+  # Optional: Model Runner for local AI models
+  model-runner:
+    image: docker/model-runner:latest
+    ports:
+      - 8080:8080
+      - 9091:9090  # Changed from 9090 to avoid conflict with pen-frontend
+    environment:
+      - LOG_LEVEL=debug
+      - ENABLE_GPU=false  # Set to true if you have GPU
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - model-cache:/models
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:8080/health']
+      interval: 3s
+      timeout: 3s
+      retries: 3
+    networks:
+      - pen-shop-network
+    profiles:
+      - with-model-runner  # Optional: only start with --profile with-model-runner
+
+# Networks
+networks:
+  pen-shop-network:
+    driver: bridge
+
+# Volumes
+volumes:
+  mysql_data:
+    driver: local
+  mongodb_data:
+    driver: local
+  model-cache:
+    driver: local
+
+# Configs section
+configs:
+  mcp_config:
+    content: |
+      mongodb:
+        connection_string: mongodb://admin:password@mongodb:27017/penstore?authSource=admin
+      brave:
+        api_key: ${BRAVE_API_KEY:-your_brave_key_here}
+
+# Models configuration (for Docker Desktop with model runner)
 models:
   qwen3:
     model: ai/qwen3:14B-Q6_K
     context_size: 32768
 
-volumes:
-  mysql_data:
-  mongodb_data:
-
-configs:
-  mcp_config:
-    content: |
-      mongodb:
-        connection_string: mongodb://admin:password@mongodb:27017/penstore
-      brave:
-        api_key: ${BRAVE_API_KEY}
-
+# Secrets (if you prefer using secrets instead of files)
 secrets:
   openai-api-key:
     file: secret.openai-api-key

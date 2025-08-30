@@ -3,7 +3,6 @@ package main
 import (
     "encoding/json"
     "net/http"
-    "strings"
 )
 
 // SecurityMiddleware checks all incoming chat requests

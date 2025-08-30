@@ -1,8 +1,0 @@
-{
-  "name": "pen-shop-security-proxy",
-  "version": "1.0.0",
-  "main": "security-proxy.js",
-  "scripts": {
-    "start": "node security-proxy.js"
-  }
-}
