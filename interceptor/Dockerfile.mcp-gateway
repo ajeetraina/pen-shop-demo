@@ -1,0 +1,4 @@
+FROM docker/mcp-gateway:latest
+RUN apk add --no-cache bash jq grep
+COPY interceptors /app/interceptors
+RUN chmod +x /app/interceptors/*.sh

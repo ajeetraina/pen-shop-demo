@@ -1,19 +1,5 @@
 
 services:
-  # Security Proxy - USE PORT 8080 FOR PROTECTED ACCESS
-  security-proxy:
-    build:
-      context: .
-      dockerfile: Dockerfile.security-proxy
-    ports:
-      - "8080:8080"
-    environment:
-      - BACKEND_HOST=adk-backend
-      - BACKEND_PORT=8000
-    depends_on:
-      - adk-backend
-    networks:
-      - default
   # Custom Pen Store Frontend
   pen-frontend:
     build:
