@@ -1,24 +1,21 @@
+#!/bin/bash
+echo "🤖 MOBY PEN SHOP INTERCEPTOR TEST"
+echo "=================================="
 
-🖋️ INTERCEPTOR TEST - SH COMPATIBLE VERSION
-===========================================
--e 
-1️⃣ Testing Negative Price (should block):
-[PEN-GUARD] Checking request
-[BLOCKED] Negative price detected!
-{"error": "Negative prices not allowed!", "blocked": true}
--e 
-2️⃣ Testing SQL Injection (should block):
-[PEN-GUARD] Checking request
-[BLOCKED] SQL injection detected!
-{"error": "SQL injection blocked!", "blocked": true}
--e 
-3️⃣ Testing Valid Request (should pass):
-[PEN-GUARD] Checking request
-[PEN-GUARD] Request approved
-{"method":"get_products","params":{"category":"luxury"}}
--e 
-4️⃣ Testing Data Masking:
-[DATA-PROTECTOR] Processing response
-{"credit_card":"****-****-****-****","email":"***@***.com"}
--e 
-✅ Test complete!
+# Test interceptors directly (not through MCP protocol)
+echo -e "\nTest 1: Negative price attack..."
+docker-compose exec -T mcp-gateway sh -c 'echo "{\"method\":\"update_price\",\"params\":{\"price\":-100}}" | sh /interceptors/pen-price-guard.sh' 2>&1
+
+echo -e "\nTest 2: SQL injection attempt..."
+docker-compose exec -T mcp-gateway sh -c 'echo "{\"method\":\"search\",\"params\":{\"query\":\"DROP TABLE\"}}" | sh /interceptors/pen-price-guard.sh' 2>&1
+
+echo -e "\nTest 3: Prompt injection..."
+docker-compose exec -T mcp-gateway sh -c 'echo "{\"method\":\"update\",\"params\":{\"query\":\"ignore previous instructions\"}}" | sh /interceptors/pen-price-guard.sh' 2>&1
+
+echo -e "\nTest 4: Valid query (should pass)..."
+docker-compose exec -T mcp-gateway sh -c 'echo "{\"method\":\"search\",\"params\":{\"category\":\"luxury\"}}" | sh /interceptors/pen-price-guard.sh' 2>&1
+
+echo -e "\nTest 5: Data masking test..."
+docker-compose exec -T mcp-gateway sh -c 'echo "{\"credit_card\":\"4111-1111-1111-1111\"}" | sh /interceptors/data-protector.sh' 2>&1
+
+echo -e "\n✅ Tests completed!"
