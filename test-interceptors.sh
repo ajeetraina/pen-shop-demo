@@ -1,4 +1,4 @@
-sh test-working-interceptor.sh 
+
 🖋️ INTERCEPTOR TEST - SH COMPATIBLE VERSION
 ===========================================
 -e 
