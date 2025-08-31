@@ -195,12 +195,15 @@ flowchart TD
 ```
 I need a fountain pen for daily journaling
 ```
+
 ```
 I Liked Montblanc
 ```
+
 ```
 What's the difference between ballpoint and rollerball?
 ```
+
 ```
 Show me luxury pens under $10
 ```
@@ -213,9 +216,7 @@ They act as security guards that inspect, modify, or block every tool call in re
 
 
 ```
- ./test-interceptors.sh 
-🤖 MOBY PEN SHOP INTERCEPTOR TEST
-==================================
+ sh test-interceptors.sh 
 
 Test 1: Negative price attack...
 [PEN-GUARD] Checking request
@@ -242,7 +243,6 @@ Test 5: Data masking test...
 {"credit_card":"****-****-****-****"}
 
 ✅ Tests completed!
-
 ```
 
 
