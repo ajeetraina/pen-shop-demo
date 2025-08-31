@@ -156,7 +156,7 @@ flowchart TD
    docker compose up -d --build
    ```
 
-   ```
+```
    [+] Running 8/8
  ✔ Network pen-shop-demo_pen-shop-network   Created                                                0.0s 
  ✔ Container pen-shop-demo-mongodb-1        Started                                                0.5s 
@@ -166,7 +166,7 @@ flowchart TD
  ✔ Container pen-shop-demo-adk-backend-1    Started                                                0.7s 
  ✔ Container pen-shop-demo-pen-frontend-1   Started                                                0.7s 
  ✔ Container pen-shop-demo-adk-ui-1         Started                                                0.8s 
- ```
+```
 
 4. **Access the applications:**
    - 🏪 **Main Store**: http://localhost:9090
@@ -175,10 +175,9 @@ flowchart TD
    - 🧠 **Agent API**: http://localhost:8000/api/health
 
 
-
-
 ## Service Details
 
+```
 | Service | Technology | Port | Purpose |
 |---------|------------|------|---------|
 | `pen-frontend` | React + Nginx | 9090 | E-commerce store UI |
@@ -187,11 +186,12 @@ flowchart TD
 | `adk-ui` | React + Nginx | 3000 | AI chat interface |
 | `catalogue-db` | MySQL 8.0 | 3306 | Product database |
 | `mongodb` | MongoDB | 27017 | Reviews & AI data |
-
+```
 
 
 
 ### **Sample Conversations**
+
 ```
 I need a fountain pen for daily journaling
 ```
@@ -216,7 +216,7 @@ They act as security guards that inspect, modify, or block every tool call in re
 
 
 ```
- sh test-interceptors.sh 
+sh test-interceptors.sh 
 
 Test 1: Negative price attack...
 [PEN-GUARD] Checking request
@@ -242,7 +242,7 @@ Test 5: Data masking test...
 [DATA-PROTECTOR] Processing response
 {"credit_card":"****-****-****-****"}
 
-✅ Tests completed!
+✅ Tests completed
 ```
 
 
