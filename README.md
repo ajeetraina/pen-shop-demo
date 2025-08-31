@@ -156,6 +156,18 @@ flowchart TD
    docker compose up -d --build
    ```
 
+   ```
+   [+] Running 8/8
+ ✔ Network pen-shop-demo_pen-shop-network   Created                                                0.0s 
+ ✔ Container pen-shop-demo-mongodb-1        Started                                                0.5s 
+ ✔ Container pen-shop-demo-catalogue-db-1   Started                                                0.5s 
+ ✔ Container pen-shop-demo-mcp-gateway-1    Started                                                0.6s 
+ ✔ Container pen-shop-demo-pen-catalogue-1  Started                                                0.6s 
+ ✔ Container pen-shop-demo-adk-backend-1    Started                                                0.7s 
+ ✔ Container pen-shop-demo-pen-frontend-1   Started                                                0.7s 
+ ✔ Container pen-shop-demo-adk-ui-1         Started                                                0.8s 
+ ```
+
 4. **Access the applications:**
    - 🏪 **Main Store**: http://localhost:9090
    - 🤖 **AI Assistant**: http://localhost:3000
@@ -190,7 +202,36 @@ I Liked Montblanc
 What's the difference between ballpoint and rollerball?
 ```
 ```
-Show me luxury pens under $100
+Show me luxury pens under $10
+```
+
+## Interceptors
+
+
+
+
+```
+ ./test-interceptors.sh 
+🤖 MOBY PEN SHOP INTERCEPTOR TEST
+==================================
+
+Test 1: Prompt injection via chatbot...
+Response received
+
+Test 2: SQL injection attempt...
+Response received
+
+Test 3: Negative price attack...
+Response received
+
+Test 4: NoSQL injection attempt...
+Response received
+
+Test 5: Valid chatbot query (should work)...
+Response received
+
+✅ All tests completed! Check docker-compose logs for interceptor activity:
+   docker-compose logs -f mcp-gateway | grep -E 'PEN-GUARD|DATA-PROTECTOR|BLOCKED'
 ```
 
 
