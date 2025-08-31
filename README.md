@@ -207,7 +207,9 @@ Show me luxury pens under $10
 
 ## Interceptors
 
-
+Interceptors are one of the most powerful security features of Docker MCP Gateway.
+They act as programmable security filters/middleware that sit between AI clients and MCP tools.
+They act as security guards that inspect, modify, or block every tool call in real-time.
 
 
 ```
