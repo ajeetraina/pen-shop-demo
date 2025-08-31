@@ -208,12 +208,11 @@ What's the difference between ballpoint and rollerball?
 Show me luxury pens under $10
 ```
 
-## Interceptors
+## Pen Guard Interceptors
 
 Interceptors are one of the most powerful security features of Docker MCP Gateway.
 They act as programmable security filters/middleware that sit between AI clients and MCP tools.
 They act as security guards that inspect, modify, or block every tool call in real-time.
-
 
 ```
 sh test-interceptors.sh 
@@ -244,6 +243,14 @@ Test 5: Data masking test...
 
 ✅ Tests completed
 ```
+
+Successfully blocking malicious requests:
+
+- Test 1: Blocked negative price attack (-$100 price attempt)
+- Test 2: Blocked SQL injection ("DROP TABLE" in query)
+- Test 3: Blocked prompt injection ("ignore previous instructions")
+- Test 4: Correctly allowed legitimate query (luxury category search)
+
 
 
 
