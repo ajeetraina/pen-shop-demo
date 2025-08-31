@@ -217,23 +217,32 @@ They act as security guards that inspect, modify, or block every tool call in re
 🤖 MOBY PEN SHOP INTERCEPTOR TEST
 ==================================
 
-Test 1: Prompt injection via chatbot...
-Response received
+Test 1: Negative price attack...
+[PEN-GUARD] Checking request
+[BLOCKED] Negative price detected!
+{"error": "Negative prices not allowed!", "blocked": true}
 
 Test 2: SQL injection attempt...
-Response received
+[PEN-GUARD] Checking request
+[BLOCKED] SQL injection detected!
+{"error": "SQL injection blocked!", "blocked": true}
 
-Test 3: Negative price attack...
-Response received
+Test 3: Prompt injection...
+[PEN-GUARD] Checking request
+[BLOCKED] Prompt injection detected!
+{"error": "Prompt injection blocked!", "blocked": true}
 
-Test 4: NoSQL injection attempt...
-Response received
+Test 4: Valid query (should pass)...
+[PEN-GUARD] Checking request
+[PEN-GUARD] Request approved
+{"method":"search","params":{"category":"luxury"}}
 
-Test 5: Valid chatbot query (should work)...
-Response received
+Test 5: Data masking test...
+[DATA-PROTECTOR] Processing response
+{"credit_card":"****-****-****-****"}
 
-✅ All tests completed! Check docker-compose logs for interceptor activity:
-   docker-compose logs -f mcp-gateway | grep -E 'PEN-GUARD|DATA-PROTECTOR|BLOCKED'
+✅ Tests completed!
+
 ```
 
 
