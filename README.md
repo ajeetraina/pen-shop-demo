@@ -255,4 +255,14 @@ Successfully blocking malicious requests:
 
 - Test 5: Successfully masked sensitive credit card data (4111-1111-1111-1111 → ---)
 
+This demonstrates that your Docker MCP Gateway interceptors are:
+
+- Detecting and blocking multiple attack vectors (injection attacks, data manipulation)
+- Allowing legitimate traffic through without interference
+- Protecting sensitive data by masking it in responses
+- Operating as real-time security filters between AI clients and MCP tools
+
+This is exactly how Docker MCP Gateway interceptors should work - as "security guards that check every message going in and out of your MCP tools".
+
+
 
