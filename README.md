@@ -251,6 +251,8 @@ Successfully blocking malicious requests:
 - Test 3: Blocked prompt injection ("ignore previous instructions")
 - Test 4: Correctly allowed legitimate query (luxury category search)
 
+## DATA-PROTECTOR Interceptor ✅
 
+- Test 5: Successfully masked sensitive credit card data (4111-1111-1111-1111 → ---)
 
 
